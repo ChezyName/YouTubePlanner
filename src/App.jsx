@@ -17,16 +17,20 @@ function getChannel(auth) {
 
 function App({clientID, APIKey}) {
   const [getID, setID] = useState(null)
+  const [getLogedIn, setLogedIn] = useState(false)
+
   const login = useGoogleLogin({
-    scope: 'https://www.googleapis.com/auth/youtube',
+    scope: 'https://www.googleapis.com/auth/youtube.readonly https://www.googleapis.com/auth/drive.appdata',
     onSuccess: (tokenResponse) => {
       setID(tokenResponse)
       console.log(tokenResponse);
-      const hasAccess = hasGrantedAnyScopeGoogle(
+      const hasAccess = hasGrantedAllScopeGoogle(
         tokenResponse,
-        'https://www.googleapis.com/auth/youtube',
+        'https://www.googleapis.com/auth/youtube.readonly',
+        'https://www.googleapis.com/auth/drive.appdata'
       );
-      console.log(hasAccess ? "Can Use YouTube API" : "NAW");
+      setLogedIn(hasAccess);
+      getChannel(tokenResponse);
     },
   });
 
@@ -36,7 +40,7 @@ function App({clientID, APIKey}) {
       gapi.client.init({
         apiKey: APIKey,
         clientId: clientID,
-        scope: "https://www.googleapis.com/auth/youtube"
+        scope: "https://www.googleapis.com/auth/youtube.readonly"
       })
     }
 
@@ -46,7 +50,7 @@ function App({clientID, APIKey}) {
 
   return (
     <>
-      <RightNavPannel/>
+      {/* <RightNavPannel/> */}
     </>
   )
 }
