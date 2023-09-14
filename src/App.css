@@ -22,3 +22,25 @@ img {
   -webkit-user-select: none;
   -ms-user-select: none;
 }
+
+#ChannelInfo {
+  width: 90%;
+  height: 40%;
+  left: 5%;
+  top: 5%;
+  position: relative;
+  display: flex;
+  background-color: #282828;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 5px;
+}
+
+#ChannelIcon {
+  width: auto;
+  height: 30%;
+  background-color: #282828;
+  margin-left: 2vw;
+  margin-top: 2vw;
+  border-radius: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
