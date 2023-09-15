@@ -9,9 +9,12 @@ function App({clientID, APIKey}) {
 
   //YouTubeStuff
   const [channelID, setChannelID] = useState("");
+  const [channelLink, setChannelLink] = useState("");
   const [channelName, setChannelname] = useState("");
   const [channelIcon, setChannelIcon] = useState("");
   const [Subscribers, setSubscribers] = useState("");
+  const [VideoCount, setVideoCount] = useState("");
+  const [ViewCount, setViewCount] = useState("");
 
   function getChannel(auth) {
     console.log("Getting Channel Data...");
@@ -31,6 +34,9 @@ function App({clientID, APIKey}) {
         setChannelname(data.items[0].snippet.title);
         setChannelIcon(data.items[0].snippet.thumbnails.high.url);
         setSubscribers(data.items[0].statistics.subscriberCount);
+        setVideoCount(data.items[0].statistics.videoCount);
+        setViewCount(data.items[0].statistics.viewCount);
+        setChannelLink("" + data.items[0].snippet.customUrl);
       }
     })
   }
@@ -54,26 +60,35 @@ function App({clientID, APIKey}) {
 
 
   useEffect(() => {
-    if(!getLogedIn){
-      /*
-      function GAPIStart(){
-        gapi.client.init({
-          apiKey: APIKey,
-          clientId: clientID,
-          scope: "https://www.googleapis.com/auth/youtube.readonly https://www.googleapis.com/auth/drive.appdata"
-        })
-      }
-
-      gapi.load('client:oauth2',GAPIStart);
-      */
-      login();
-    }
-  }, [])
+    if(!getLogedIn) login();
+  })
 
   return (
     <>
       <div id="ChannelInfo">
-        <img id="ChannelIcon" src={channelIcon}/>
+        <div id="ChannelNameIcon">
+          <img id="ChannelIcon" src={channelIcon}/>
+          <div id="TextHolder">
+            <a href={"https://youtube.com/channel/"+channelID} target='_blank' id="ChannelLink">{channelName}</a>
+            <a href={"https://studio.youtube.com/channel/"+channelID} target='_blank' id="OpenStudio">YouTube Studio</a>
+          </div>
+        </div>
+          <div id="ChannelStatistics">
+            <div>
+              <div>Subscribers</div>
+              <div>{Subscribers}</div>
+            </div>
+
+            <div>
+              <div>Views</div>
+              <div>{ViewCount}</div>
+            </div>
+
+            <div>
+              <div>Videos</div>
+              <div>{VideoCount}</div>
+            </div>
+          </div>
       </div>
     </>
   )

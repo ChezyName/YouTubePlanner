@@ -24,7 +24,7 @@ img {
 }
 
 #ChannelInfo {
-  width: 90%;
+  width: 40%;
   height: 40%;
   left: 5%;
   top: 5%;
@@ -32,15 +32,81 @@ img {
   display: flex;
   background-color: #282828;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 5px;
+  border-radius: 1.5vw;
+  flex-direction: column;
+  min-height: 400px;
+  min-width: 400px;
+}
+
+#ChannelNameIcon{
+  width: auto;
+  height: 30%;
+  margin: 2vw;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
 }
 
 #ChannelIcon {
   width: auto;
-  height: 30%;
+  height: 80%;
   background-color: #282828;
-  margin-left: 2vw;
-  margin-top: 2vw;
   border-radius: 100%;
   border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+#TextHolder {
+  margin-left: 2vw;
+  width: 100%;
+  height: 80%;
+  color: white;
+  font-size: 2em;
+  position: relative;
+  display: grid;
+  justify-content: center;
+  align-items: center;
+}
+
+#ChannelLink {
+  text-align: center;
+  font-family: 'Roboto', sans-serif ;
+  font-size: 100%;
+  color: white;
+  white-space: pre-line;
+  padding: 0;
+  margin: 0;
+}
+
+#OpenStudio {
+  text-align: center;
+  font-family: 'Roboto', sans-serif ;
+  font-size: 50%;
+  color: red;
+  white-space: pre-line;
+  padding: 0;
+  margin: 0;
+}
+
+#ChannelStatistics {
+  width: auto;
+  height: 100%;
+  margin: 2vw;
+  display: flex;
+  flex-direction: column;
+}
+
+#ChannelStatistics div {
+  width: 100%;
+  height: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 125%;
+  user-select: none;
+  margin-top: auto;
+}
+
+#ChannelStatistics div div:last-child {
+  margin-left: auto;
+  flex: 1;
 }
