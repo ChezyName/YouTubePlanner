@@ -45,9 +45,9 @@ function App({clientID, APIKey}) {
     })
   }
 
-  function uploadGoogleDriveData(data, fileType, auth){
-    console.log("Auth Token: ", auth);
+  function uploadGoogleDriveData(name, data, fileType, auth){
     return new Promise((resolve,reject) => {
+      console.log("Auth Token: ", auth);
       fetch("https://www.googleapis.com/upload/drive/v3/files?uploadType=media&supportsAllDrives=true", {
         method: "POST", // *GET, POST, PUT, DELETE, etc.
         //mode: "no-cors", // no-cors, *cors, same-origin
@@ -55,11 +55,15 @@ function App({clientID, APIKey}) {
         //credentials: "same-origin", // include, *same-origin, omit
         headers: {
           "Content-Type": "application/"+fileType,
-          "Authorization": 'Bearer ' + auth.access_token,
+          "Authorization": 'Bearer ' + auth,
+          'name': name,
+          'parents': ['appDataFolder']
         },
         //redirect: "follow", // manual, *follow, error
         //referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-        body: data
+        body: {
+          data
+        }
       }).then((response) => {resolve(response.json())});
     });
 
@@ -72,7 +76,7 @@ function App({clientID, APIKey}) {
 
 
   const login = useGoogleLogin({
-    scope: 'https://www.googleapis.com/auth/youtube.readonly https://www.googleapis.com/auth/drive.appdata',
+    scope: 'https://www.googleapis.com/auth/youtube.readonly https://www.googleapis.com/auth/drive.appdata https://www.googleapis.com/auth/drive.file',
     onSuccess: (tokenResponse) => {
       setID(tokenResponse)
       console.log(tokenResponse);
@@ -86,11 +90,13 @@ function App({clientID, APIKey}) {
       setAuthToken(tokenResponse);
       getChannel(tokenResponse);
       
-      uploadGoogleDriveData(JSON.stringify({
+      /* File Upload Works!
+      uploadGoogleDriveData("FirstEverUploadFromJS",JSON.stringify({
         name: "ChezyName",
         shouldYallSubscribe: "Yess",
         shouldYallLike: "HELL YEAH!"
-      }),'json', tokenResponse).then((d) => {console.log(d)})
+      }),'json', tokenResponse.access_token).then((d) => {console.log(d)})
+      */
     },
   }, []);
 
