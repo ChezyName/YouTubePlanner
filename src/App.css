@@ -1,7 +1,17 @@
 html, body, #root {
   width: 100%;
   height: 100%;
+  display: block;
   background-color: #1F1F1F;
+}
+
+#topHalf {
+  margin-top: 2vh;
+  display: flex;
+  width: 100% !important;
+  height: 40% !important;
+  justify-content: center;
+  align-items: center;
 }
 
 #tNav {
@@ -23,19 +33,22 @@ img {
   -ms-user-select: none;
 }
 
-#ChannelInfo {
-  width: 40%;
+#ChannelInfo, #LatestVideo {
+  width: 80%;
   height: 40%;
-  left: 5%;
-  top: 5%;
   position: relative;
   display: flex;
   background-color: #282828;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 1.5vw;
+  margin: auto;
+  margin-top: 2vh;
   flex-direction: column;
-  min-height: 400px;
-  min-width: 400px;
+  min-height: 350px;
+}
+
+#LatestVideo {
+  width: 50% !important;
 }
 
 #ChannelNameIcon{
@@ -109,4 +122,65 @@ img {
 #ChannelStatistics div div:last-child {
   margin-left: auto;
   flex: 1;
+}
+
+#TextHolder a:hover{
+  text-decoration: underline;
+}
+
+#All {
+  width: 100%;
+  height: fit-content;
+  position: relative;
+  display: flex;
+  top: 10%;
+  background-color: #282828;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin-top: 2vh;
+  flex-direction: column;
+  min-width: 100vw;
+}
+
+#AddVideo {
+  width: 80%;
+  height: 15%;
+  background-color: #282828;
+  position: absolute;
+  left: 10%;
+  bottom: 8vh;
+  border-radius: 250px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.6);
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s ease-in-out;
+}
+
+#AddVideo span {
+  user-select: none;
+  font-size: xx-large;
+  font-weight: bold;
+}
+
+#AddVideo:hover {
+  background-color: #1F1F1F;
+  color: rgba(255, 255, 255, 1);
+  border: 1px solid rgba(255, 255, 255, 1);
+}
+
+
+#Overlay {
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  background-color: rgba(5, 5, 5, 0.8);
+  background-color: #282828;
+  top: 0;
+  left: 0;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
