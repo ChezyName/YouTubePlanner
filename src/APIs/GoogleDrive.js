@@ -33,7 +33,7 @@ export function uploadJSONGoogleDriveData(data, fileName, auth){
     });
 }
 
-export function getSingleGoogleDriveJSONData(auth,id){
+export function getSingleGoogleDriveData(auth,id){
     return new Promise((resolve) => {
         fetch(`https://www.googleapis.com/drive/v3/files/${id}?alt=media`, {
             method: "GET",
@@ -74,5 +74,5 @@ export function getAllGoogleDriveJSONData(auth){
 export default {
     UploadJSON: uploadJSONGoogleDriveData,
     LoadAllJSON: getAllGoogleDriveJSONData,
-    LoadJSON: getSingleGoogleDriveJSONData,
+    Load: getSingleGoogleDriveData,
 } 

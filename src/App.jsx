@@ -17,7 +17,7 @@ function App({clientID, APIKey}) {
   const [VideoCount, setVideoCount] = useState("");
   const [ViewCount, setViewCount] = useState("");
   const [hasVideos,setHasVideos] = useState(false);
-  const [showOverlay,setShowOverlay] = useState(false);
+  const [showOverlay,setShowOverlay] = useState(true);
   const [authToken,setAuthToken] = useState("");
 
   function getChannel(auth) {
@@ -60,16 +60,9 @@ function App({clientID, APIKey}) {
       setLogedIn(hasAccess);
       setAuthToken(tokenResponse.access_token);
       getChannel(tokenResponse);
-      
-      /* File Upload Works!
-      GoogleDrive.UploadJSON({
-        name: "ChezyName",
-        shouldYallSubscribe: "Yess",
-        shouldYallLike: "HELL YEAH!"
-      },Date.now(), tokenResponse.access_token).then((d) => {console.log(d)});
-      */
 
-      GoogleDrive.LoadAllJSON(tokenResponse.access_token).then((d) => { console.log(d); });
+      //Check all files
+      //GoogleDrive.LoadAllJSON(tokenResponse.access_token).then((d) => { console.log(d); });
     },
   }, []);
 
@@ -117,7 +110,10 @@ function App({clientID, APIKey}) {
 
         {showOverlay ? 
         <div id="Overlay">
-          
+          <div id="ThumbnailTitle">
+            <img id="Thumbnail"/>
+            <input id="Title" type='text'/>
+          </div>
         </div>
         : ""}
     </>

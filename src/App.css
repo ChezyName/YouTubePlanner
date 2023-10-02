@@ -175,12 +175,46 @@ img {
   width: 100vw;
   height: 100vh;
   position: absolute;
-  background-color: rgba(5, 5, 5, 0.8);
   background-color: #282828;
   top: 0;
   left: 0;
   user-select: none;
+  display: grid;
+  justify-content: left;
+}
+
+#ThumbnailTitle {
+  width: 60vw;
+  aspect-ratio: 16 / 9;
+  min-height: 270px;
+  min-width: 480px;
   display: flex;
+  margin: 0;
+  padding: 0;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
+  margin: 2%;
+}
+
+#Thumbnail, #Title {
+  width: 100%;
+  height: 15%;
+}
+
+#Thumbnail {
+  background-color: black;
+  border: none !important;
+  flex-grow: 15;
+}
+
+#Title {
+  background-color: #282828;
+  border: 1px solid black;
+  margin-top: 5px;
+  padding-left: 0;
+  padding-right: 0;
+  margin-left: 1px;
+  margin-right: 1px;
+  padding-left: 1%;
 }
