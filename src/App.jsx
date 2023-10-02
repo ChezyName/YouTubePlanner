@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import './App.css'
 import { useGoogleLogin, hasGrantedAllScopesGoogle, GoogleLogin } from '@react-oauth/google';
-//import request from 'request';
+import GoogleDrive from './APIs/GoogleDrive';
 
 function App({clientID, APIKey}) {
   const [getID, setID] = useState(null)
@@ -45,35 +45,6 @@ function App({clientID, APIKey}) {
     })
   }
 
-  function uploadGoogleDriveData(name, data, fileType, auth){
-    return new Promise((resolve,reject) => {
-      console.log("Auth Token: ", auth);
-      fetch("https://www.googleapis.com/upload/drive/v3/files?uploadType=media&supportsAllDrives=true", {
-        method: "POST", // *GET, POST, PUT, DELETE, etc.
-        //mode: "no-cors", // no-cors, *cors, same-origin
-        //cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-        //credentials: "same-origin", // include, *same-origin, omit
-        headers: {
-          "Content-Type": "application/"+fileType,
-          "Authorization": 'Bearer ' + auth,
-          'name': name,
-          'parents': ['appDataFolder']
-        },
-        //redirect: "follow", // manual, *follow, error
-        //referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-        body: {
-          data
-        }
-      }).then((response) => {resolve(response.json())});
-    });
-
-    fetch()
-  }
-
-  async function getGoogleDriveData(url){
-
-  }
-
 
   const login = useGoogleLogin({
     scope: 'https://www.googleapis.com/auth/youtube.readonly https://www.googleapis.com/auth/drive.appdata https://www.googleapis.com/auth/drive.file',
@@ -87,16 +58,18 @@ function App({clientID, APIKey}) {
       );
       console.log(hasAccess ? "Full Access.." : "Something Not Working...");
       setLogedIn(hasAccess);
-      setAuthToken(tokenResponse);
+      setAuthToken(tokenResponse.access_token);
       getChannel(tokenResponse);
       
       /* File Upload Works!
-      uploadGoogleDriveData("FirstEverUploadFromJS",JSON.stringify({
+      GoogleDrive.UploadJSON({
         name: "ChezyName",
         shouldYallSubscribe: "Yess",
         shouldYallLike: "HELL YEAH!"
-      }),'json', tokenResponse.access_token).then((d) => {console.log(d)})
+      },Date.now(), tokenResponse.access_token).then((d) => {console.log(d)});
       */
+
+      GoogleDrive.LoadAllJSON(tokenResponse.access_token).then((d) => { console.log(d); });
     },
   }, []);
 
@@ -111,7 +84,7 @@ function App({clientID, APIKey}) {
           <div id="ChannelNameIcon">
             <img id="ChannelIcon" src={channelIcon}/>
             <div id="TextHolder">
-              <a href={"https://youtube.com/channel/"+channelID} target='_blank' id="ChannelLink">{channelName}</a>
+              <a href={"https://youtube.com/channel/"+channelID} target='_blank' id="ChannelLink">Welcome {channelName}!</a>
               <a href={"https://studio.youtube.com/channel/"+channelID} target='_blank' id="OpenStudio">YouTube Studio</a>
             </div>
           </div>
