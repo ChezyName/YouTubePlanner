@@ -8,7 +8,7 @@ const FloatInputField = ({type="text", placeholder="text",maxCharCount=100}) => 
     const [wordCount,setWordCount] = useState(0);
     return (
         <>
-          <FloatingLabel style={{width: '100%', height: '100%'}} id={redOutlines ? "RED" : "BLK"} controlId={"floatingInput"+{type}} label={placeholder + (wordCount > 0 ? (" ("+wordCount+"/"+maxCharCount+")") : "")}>
+          <FloatingLabel style={{width: '100%', height: '100%'}} id={redOutlines ? "RED" : "BLK"} controlId={"floatingInput"} label={placeholder + (wordCount > 0 ? (" ("+wordCount+"/"+maxCharCount+")") : "")}>
             <Form.Control style={{width: '100%', height: '100%'}} type={type} placeholder={placeholder} onInput={(text) => {
                 setRedOutlines(text.target.value.length > maxCharCount);
                 setWordCount(text.target.value.length);

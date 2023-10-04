@@ -230,6 +230,7 @@ img {
   margin-top: 5px;
 }
 
+
 #RED *{
   color: red;
 }
@@ -238,13 +239,13 @@ img {
   color: white;
 }
 
-.form-control:focus + .form-label {
-  color: red;
-  background-color: transparent;
-} 
-
 textarea, input {
   resize: none !important;
   overflow-y: auto;
+  background-color: #1F1F1F !important;
+}
+
+/** Hides Background of Floating Text Labels */
+.form-floating>.form-control-plaintext~label::after, .form-floating>.form-control:focus~label::after, .form-floating>.form-control:not(:placeholder-shown)~label::after, .form-floating>.form-select~label::after {
   background-color: transparent !important;
 }
