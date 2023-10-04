@@ -1,7 +1,11 @@
 import { useEffect, useState } from 'react';
-import './App.css'
 import { useGoogleLogin, hasGrantedAllScopesGoogle, GoogleLogin } from '@react-oauth/google';
 import GoogleDrive from './APIs/GoogleDrive';
+
+import './App.css'
+import 'bootstrap/dist/css/bootstrap.min.css';
+import FloatInputField from './components/Other/FloatInputField';
+import FloatInputArea from './components/Other/FloatInputArea';
 
 function App({clientID, APIKey}) {
   const [getID, setID] = useState(null)
@@ -112,8 +116,10 @@ function App({clientID, APIKey}) {
         <div id="Overlay">
           <div id="ThumbnailTitle">
             <img id="Thumbnail"/>
-            <input id="Title" type='text'/>
+            <div id="Title"><FloatInputField type='text' placeholder='Title' maxCharCount={70}/></div>
+            <div id="Notes"><FloatInputArea type='area' placeholder='Notes' maxCharCount={0}/></div>
           </div>
+          <div id="Desciption"><FloatInputArea type='area' placeholder='Description' maxCharCount={5000}/></div>
         </div>
         : ""}
     </>

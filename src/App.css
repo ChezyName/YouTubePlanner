@@ -179,42 +179,72 @@ img {
   top: 0;
   left: 0;
   user-select: none;
-  display: grid;
+  display: flex;
   justify-content: left;
 }
 
 #ThumbnailTitle {
-  width: 60vw;
-  aspect-ratio: 16 / 9;
-  min-height: 270px;
-  min-width: 480px;
+  width: 50vw;
   display: flex;
   margin: 0;
   padding: 0;
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  margin: 2%;
+  margin: 0.5%;
 }
 
-#Thumbnail, #Title {
+#Desciption {
+  width: 60vw;
+  min-width: 480px;
+  padding-top: 0;
+  margin: 0.5%;
+}
+#Thumbnail{
   width: 100%;
   height: 15%;
+  flex: 0 1 auto;
+}
+#Title {
+  width: 100%;
+  height: 15%;
+  flex: 0 1;
 }
 
 #Thumbnail {
+  height: auto;
+  width: 100%;
   background-color: black;
   border: none !important;
-  flex-grow: 15;
+  aspect-ratio: 16 / 9;
+}
+
+#Notes {
+  height: auto;
+  margin-top: 1.5%;
+  width: 100%;
+  flex: 1 1 auto;
 }
 
 #Title {
-  background-color: #282828;
-  border: 1px solid black;
   margin-top: 5px;
-  padding-left: 0;
-  padding-right: 0;
-  margin-left: 1px;
-  margin-right: 1px;
-  padding-left: 1%;
+}
+
+#RED *{
+  color: red;
+}
+
+#BLK *{
+  color: white;
+}
+
+.form-control:focus + .form-label {
+  color: red;
+  background-color: transparent;
+} 
+
+textarea, input {
+  resize: none !important;
+  overflow-y: auto;
+  background-color: transparent !important;
 }
