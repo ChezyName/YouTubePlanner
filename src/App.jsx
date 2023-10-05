@@ -2,10 +2,13 @@ import { useEffect, useState } from 'react';
 import { useGoogleLogin, hasGrantedAllScopesGoogle, GoogleLogin } from '@react-oauth/google';
 import GoogleDrive from './APIs/GoogleDrive';
 
+import LeftArrow from "./assets/BackArrow.svg"
+
 import './App.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import FloatInputField from './components/Other/FloatInputField';
 import FloatInputArea from './components/Other/FloatInputArea';
+import Spinner from 'react-bootstrap/Spinner';
 
 function App({clientID, APIKey}) {
   const [getID, setID] = useState(null)
@@ -21,8 +24,9 @@ function App({clientID, APIKey}) {
   const [VideoCount, setVideoCount] = useState("");
   const [ViewCount, setViewCount] = useState("");
   const [hasVideos,setHasVideos] = useState(false);
-  const [showOverlay,setShowOverlay] = useState(true);
   const [authToken,setAuthToken] = useState("");
+
+  const [editVideo,setEditVideo] = useState(false);
 
   function getChannel(auth) {
     console.log("Getting Channel Data...");
@@ -107,19 +111,29 @@ function App({clientID, APIKey}) {
 
         { hasVideos ? <div id="All">
 
-        </div> : <div id="AddVideo"><span>Create your first <u>Video Plan</u>.</span></div>}
+        </div> : <div onClick={() => {setEditVideo(true)}} id="AddVideo"><span>Create your first <u>Video Plan</u>.</span></div>}
 
 
         {/** OVERLAY WIDGET / WINDOW TO EDIT VIDEO PLANNER INFORMATION */}
 
-        {showOverlay ? 
-        <div id="Overlay">
-          <div id="ThumbnailTitle">
-            <img id="Thumbnail"/>
-            <div id="Title"><FloatInputField type='text' placeholder='Title' maxCharCount={70}/></div>
-            <div id="Notes"><FloatInputArea type='area' placeholder='Notes' maxCharCount={0}/></div>
+        {!getLogedIn ? <div id="Overlay" style={{objectFit: "contain", backgroundColor: '#1F1F1F', justifyContent: 'center', alignItems: 'center'}}>
+          <Spinner style={{width: '6vw', height: '6vw'}} variant='light' animation='border' role="status"/>
+        </div> : ""}
+
+        {editVideo ? <div id="OverlayTop">
+          <div id="EditNavbar">
+            <button id="BackButton"><img src={LeftArrow} style={{filter: 'invert(100%)'}}/></button>
+            <button id="videoID" disabled={true}>Video #1</button>
+            <button id="SaveButton">SAVE</button>
           </div>
-          <div id="Desciption"><FloatInputArea type='area' placeholder='Description' maxCharCount={5000}/></div>
+          <div id="Overlay2">
+            <div id="ThumbnailTitle">
+              <img id="Thumbnail"/>
+              <div id="Title"><FloatInputField type='text' placeholder='Title' maxCharCount={70}/></div>
+              <div id="Notes"><FloatInputArea type='area' placeholder='Notes' maxCharCount={0}/></div>
+            </div>
+            <div id="Desciption"><FloatInputArea type='area' placeholder='Description' maxCharCount={5000}/></div>
+          </div>
         </div>
         : ""}
     </>

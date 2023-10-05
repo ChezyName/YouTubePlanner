@@ -117,6 +117,7 @@ img {
   font-size: 125%;
   user-select: none;
   margin-top: auto;
+  color: white !important;
 }
 
 #ChannelStatistics div div:last-child {
@@ -178,6 +179,28 @@ img {
   background-color: #282828;
   top: 0;
   left: 0;
+  user-select: none;
+  display: flex;
+  justify-content: left;
+}
+
+#OverlayTop {
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  background-color: #282828;
+  top: 0;
+  left: 0;
+  user-select: none;
+  display: grid;
+  grid-template-rows: 8% 92%;
+  grid-template-columns: 100%;
+}
+
+#Overlay2 {
+  width: 100%;
+  height: 100%;
+  background-color: #282828;
   user-select: none;
   display: flex;
   justify-content: left;
@@ -248,4 +271,65 @@ textarea, input {
 /** Hides Background of Floating Text Labels */
 .form-floating>.form-control-plaintext~label::after, .form-floating>.form-control:focus~label::after, .form-floating>.form-control:not(:placeholder-shown)~label::after, .form-floating>.form-select~label::after {
   background-color: transparent !important;
+}
+
+#EditNavbar {
+  width: 100%;
+  height: 100%;
+  background-color: transparent;
+  display: flex;
+  justify-content: space-between;
+}
+
+#BackButton {
+  background-color: transparent;
+  width: auto;
+  height: 100%;
+  border-radius: 0;
+  transition: all 0.5s ease;
+}
+
+#BackButton img{
+  width: 100%;
+  height: 40%;
+  filter: invert(53%) sepia(88%) saturate(2828%) hue-rotate(160deg) brightness(999%) contrast(101%);
+}
+
+#BackButton:hover {
+  border: 1px solid red;
+  background-color: rgba(255, 0, 0, 0.05);
+}
+
+#SaveButton {
+  background-color: transparent;
+  width: auto;
+  height: 100%;
+  border-radius: 0;
+  transition: all 0.5s ease;
+  margin-left: auto;
+  font-size: large;
+}
+
+
+#SaveButton:hover {
+  border: 1px solid green;
+  background-color: rgba(0, 255, 0, 0.05);
+}
+
+#videoID {
+  width: 100%;
+  height: 100%;
+  color: white;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: transparent;
+  text-transform: uppercase;
+  background-color: transparent;
+  user-select: none;
+  pointer-events: none;
+}
+
+#videoID:hover , #videoID:active, #videoID:focus, #videoID:focus-visible {
+  border: none !important;
+  outline: none !important;
 }
