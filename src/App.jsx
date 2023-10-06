@@ -25,7 +25,7 @@ function App({clientID, APIKey}) {
   const [ViewCount, setViewCount] = useState("");
   const [hasVideos,setHasVideos] = useState(false);
   const [authToken,setAuthToken] = useState("");
-
+  const [mainFileData,setMainFileData] = useState({});
   const [editVideo,setEditVideo] = useState(false);
 
   function getChannel(auth) {
@@ -89,8 +89,7 @@ function App({clientID, APIKey}) {
       setAuthToken(tokenResponse.access_token);
       getChannel(tokenResponse);
 
-      //Check all files
-      //GoogleDrive.LoadAllJSON(tokenResponse.access_token).then((d) => { console.log(d); });
+      GoogleDrive.LoadMainFile(tokenResponse.access_token).then((d) => { console.log(d); setMainFileData(d); })
     },
   }, []);
 

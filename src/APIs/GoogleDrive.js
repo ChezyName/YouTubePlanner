@@ -33,6 +33,50 @@ export function uploadJSONGoogleDriveData(data, fileName, auth){
     });
 }
 
+export function getMainFile(auth){
+    console.log("Getting JSON Data -> Auth Token: ", auth);
+    return new Promise((resolve) => {
+        fetch("https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&orderBy=createdTime&q:mimeType='application/json'", {
+        method: "GET",
+        headers: {
+            "Authorization": 'Bearer ' + auth,
+        },
+        }).then((response) => {
+            response.json().then(async (data) => {
+                //array of files
+                let files = data["files"];
+                let mainFileID = "";
+                let fileFound = false;
+
+                for(let i = 0; i < files.length; i++){
+                    if(files[i].name == "MainDataFile"){
+                        fileFound = true;
+                        mainFileID = files[i].id;
+                        break;
+                    }
+                }
+                if(fileFound){
+                    //return file data
+                    getSingleGoogleDriveData(auth,mainFileID).then((d) => {
+                        resolve(d);
+                    });
+                }
+                else{
+                    //create new file with empty data and return
+                    let baseFileData = {
+                        videoCount: 0,
+                        activeVideoPlans: [],
+                    }
+
+                    uploadJSONGoogleDriveData(baseFileData,"MainDataFile",auth).then(() => {
+                        resolve(baseFileData);
+                    })
+                }
+            })
+        });
+    });
+}
+
 export function getSingleGoogleDriveData(auth,id){
     return new Promise((resolve) => {
         fetch(`https://www.googleapis.com/drive/v3/files/${id}?alt=media`, {
@@ -75,4 +119,5 @@ export default {
     UploadJSON: uploadJSONGoogleDriveData,
     LoadAllJSON: getAllGoogleDriveJSONData,
     Load: getSingleGoogleDriveData,
+    LoadMainFile: getMainFile,
 } 
