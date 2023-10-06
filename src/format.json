@@ -1,0 +1,16 @@
+{
+    "//Top-Level File : Main JSON": "--------------",
+    "videoCount": 0,
+    "activeVideoFiles": [],
+
+
+
+    "//Main Video Planner File : Video JSON": "--------------",
+    "VideoPlan": {
+        "ThumbnailID": "GoogleDriveLink",
+        "Title": "Video Title",
+        "Description": "Video Desc",
+        "Notes": "Video Notes",
+        "VideoNumber": "Video #25"
+    }
+}
