@@ -240,6 +240,29 @@ img {
   background-color: black;
   border: none !important;
   aspect-ratio: 16 / 9;
+  border: 1px solid rgba(255,255,255, 0.5) !important;
+  border-radius: 2%;
+  transition: border 0.2 ease-in-out;
+}
+
+#Thumbnail:hover, #Thumbnail:active, #Thumbnail:focus {
+  border: 1px solid rgba(255,255,255, 1) !important;
+}
+
+.form-control {
+  border: 1px solid rgba(255,255,255, 0.5) !important;
+}
+
+.form-control:hover {
+  border: 1px solid rgba(255,255,255, 1) !important;
+}
+
+.form-control:active {
+  border: 1px solid rgba(255,255,255, 1) !important;
+}
+
+.form-control:focus {
+  box-shadow: 0;
 }
 
 #Notes {
@@ -332,4 +355,44 @@ textarea, input {
 #videoID:hover , #videoID:active, #videoID:focus, #videoID:focus-visible {
   border: none !important;
   outline: none !important;
+}
+
+@property --subscribers {
+  syntax: '<integer>';
+  initial-value: 0;
+  inherits: false;
+}
+
+@property --views {
+  syntax: '<integer>';
+  initial-value: 0;
+  inherits: false;
+}
+
+@property --videos {
+  syntax: '<integer>';
+  initial-value: 0;
+  inherits: false;
+}
+
+.subs {
+  transition: --subscribers 1.25s ease-in;
+  counter-reset: subscribers var(--subscribers);
+}
+.subs::after {
+  content: counter(subscribers);
+}
+.views {
+  transition: --views 1.25s ease-in;
+  counter-reset: views var(--views);
+}
+.views::after {
+  content: counter(views);
+}
+.videos {
+  transition: --videos 1.25s ease-in;
+  counter-reset: videos var(--videos);
+}
+.videos::after {
+  content: counter(videos);
 }

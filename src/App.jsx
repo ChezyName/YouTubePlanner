@@ -49,6 +49,26 @@ function App({clientID, APIKey}) {
         setVideoCount(data.items[0].statistics.videoCount);
         setViewCount(data.items[0].statistics.viewCount);
         setChannelLink("" + data.items[0].snippet.customUrl);
+
+        //CSS Properties for Animations
+        window.CSS.registerProperty({
+          name: '--subscribers',
+          syntax: '<integer>',
+          initialValue: data.items[0].statistics.subscriberCount,
+          inherits: false,
+        })
+        window.CSS.registerProperty({
+          name: '--views',
+          syntax: '<integer>',
+          initialValue: data.items[0].statistics.viewCount,
+          inherits: false,
+        })
+        window.CSS.registerProperty({
+          name: '--videos',
+          syntax: '<integer>',
+          initialValue: data.items[0].statistics.videoCount,
+          inherits: false,
+        })
       }
     })
   }
@@ -74,6 +94,9 @@ function App({clientID, APIKey}) {
     },
   }, []);
 
+  function createNewVideo(){
+
+  }
 
   useEffect(() => {
     if(!getLogedIn) login();
@@ -94,17 +117,17 @@ function App({clientID, APIKey}) {
             <div id="ChannelStatistics">
               <div>
                 <div>Subscribers</div>
-                <div>{Subscribers}</div>
+                <div className='subs'></div>
               </div>
 
               <div>
                 <div>Views</div>
-                <div>{ViewCount}</div>
+                <div className='views'></div>
               </div>
 
               <div>
                 <div>Videos</div>
-                <div>{VideoCount}</div>
+                <div className='videos'></div>
               </div>
             </div>
         </div>
@@ -122,13 +145,15 @@ function App({clientID, APIKey}) {
 
         {editVideo ? <div id="OverlayTop">
           <div id="EditNavbar">
-            <button id="BackButton"><img src={LeftArrow} style={{filter: 'invert(100%)'}}/></button>
+            <button id="BackButton" onClick={() => {setEditVideo(false);}}><img src={LeftArrow} style={{filter: 'invert(100%)'}}/></button>
             <button id="videoID" disabled={true}>Video #1</button>
             <button id="SaveButton">SAVE</button>
           </div>
           <div id="Overlay2">
             <div id="ThumbnailTitle">
-              <img id="Thumbnail"/>
+              <div id="Thumbnail">
+
+              </div>
               <div id="Title"><FloatInputField type='text' placeholder='Title' maxCharCount={70}/></div>
               <div id="Notes"><FloatInputArea type='area' placeholder='Notes' maxCharCount={0}/></div>
             </div>
