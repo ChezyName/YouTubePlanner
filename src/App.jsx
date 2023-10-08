@@ -96,6 +96,8 @@ function App({clientID, APIKey}) {
   function createNewVideo(){
     let getVideoCount = mainFileData.videoCount + 1;
     console.log("Making #" + getVideoCount + " Video.")
+
+    //Set Video Data
   }
 
   useEffect(() => {
