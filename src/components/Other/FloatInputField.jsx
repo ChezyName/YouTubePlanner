@@ -1,20 +1,16 @@
-import React, {useRef, useState} from 'react'
+import React, {forwardRef, useRef, useState} from 'react'
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Form from 'react-bootstrap/Form';
 
 
-const FloatInputField = ({type="text", placeholder="text",maxCharCount=100,onChangeEvent,customEventName}) => {
+const FloatInputField = forwardRef(({type="text", placeholder="text",maxCharCount=100,onChangeEvent,ID}, forwardedRef) => {
     const [redOutlines, setRedOutlines] = useState(false)
     const [wordCount,setWordCount] = useState(0);
-    const textRef = useRef();
 
-    document.addEventListener(customEventName, function(data) {
-      console.log(textRef.current, + " / " + customEventName);
-    })
     return (
         <>
-          <FloatingLabel style={{width: '100%', height: '100%'}} id={redOutlines ? "RED" : "BLK"} controlId={"floatingInput"} label={placeholder + (wordCount > 0 ? (" ("+wordCount+"/"+maxCharCount+")") : "")}>
-            <Form.Control ref={textRef} style={{width: '100%', height: '100%'}} type={type} placeholder={placeholder} onInput={(text) => {
+          <FloatingLabel style={{width: '100%', height: '100%'}} id={redOutlines ? "RED" : "BLK"} controlId={"floatingInput" + ID} label={placeholder + (wordCount > 0 ? (" ("+wordCount+"/"+maxCharCount+")") : "")}>
+            <Form.Control ref={forwardedRef} style={{width: '100%', height: '100%'}} type={type} placeholder={placeholder} onInput={(text) => {
                 setRedOutlines(text.target.value.length > maxCharCount);
                 setWordCount(text.target.value.length);
                 onChangeEvent(text.target.value);
@@ -23,6 +19,6 @@ const FloatInputField = ({type="text", placeholder="text",maxCharCount=100,onCha
           </FloatingLabel>
         </>
     );
-}
+});
 
 export default FloatInputField

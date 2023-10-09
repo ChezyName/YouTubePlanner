@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useGoogleLogin, hasGrantedAllScopesGoogle, GoogleLogin } from '@react-oauth/google';
 import GoogleDrive, { UpdateMainFile } from './APIs/GoogleDrive';
 
@@ -9,7 +9,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import FloatInputField from './components/Other/FloatInputField';
 import FloatInputArea from './components/Other/FloatInputArea';
 import Spinner from 'react-bootstrap/Spinner';
-import { useRef } from 'react';
 
 function App({clientID, APIKey}) {
   const [getID, setID] = useState(null)
@@ -33,9 +32,16 @@ function App({clientID, APIKey}) {
   const [fileChaningID,setfileChaningID] = useState("");
   const [allVideoPlans,setAllVideoPlans] = useState([]);
 
-  const setTitle = new CustomEvent('changeTitle', {'detail': currentFileChanging.Title})
-  const setDesc = new CustomEvent('changeDesc', {'detail': currentFileChanging.Description})
-  const setNotes = new CustomEvent('changeNotes', {'detail': currentFileChanging.Notes})
+  const titleRef = useRef();
+
+  function setVideoData(videoData){
+    let titleInput = document.getElementById("floatingInputTITLE");
+    let descInput = document.getElementById("floatingInputDESC");
+    let notesInput = document.getElementById("floatingInputNOTES");
+
+    console.log(titleRef)
+    if(titleRef.current) titleRef.current.target.value = videoData.Title;
+  }
 
   function getChannel(auth) {
     console.log("Getting Channel Data...");
@@ -147,9 +153,7 @@ function App({clientID, APIKey}) {
     mainFileData.videoCount = getVideoCount;
     UpdateMainFile(authToken, mainFileData);
 
-    document.dispatchEvent(setTitle);
-    document.dispatchEvent(setDesc);
-    document.dispatchEvent(setNotes);
+    setVideoData(newVideo);
 
     //Enable Video Editing
     setCurrentFileChanging(newVideo);
@@ -185,13 +189,12 @@ function App({clientID, APIKey}) {
   useEffect(() => {
     if(!getLogedIn) login();
   })
+  
 
   const VideoElement = ({id,data}) => {
     //console.log("Loading New Element: " + id);
     return <div onClick={(e) => {
-      document.dispatchEvent(setTitle);
-      document.dispatchEvent(setDesc);
-      document.dispatchEvent(setNotes);
+      setVideoData(data);
       setCurrentFileChanging(data);
       setfileChaningID(id);
       setEditVideo(true);
@@ -250,10 +253,10 @@ function App({clientID, APIKey}) {
               <div id="Thumbnail">
 
               </div>
-              <div id="Title"><FloatInputField customEventName="changeTitle" onChangeEvent={(t) => {let newData = currentFileChanging; newData.Title = t; setCurrentFileChanging(newData)}} type='text' placeholder='Title' maxCharCount={70}/></div>
-              <div id="Notes"><FloatInputArea customEventName="changeNotes" onChangeEvent={(t) => {let newData = currentFileChanging; newData.Notes = t; setCurrentFileChanging(newData)}} type='area' placeholder='Notes' maxCharCount={0}/></div>
+              <div id="Title"><FloatInputField ref={titleRef} ID="TITLE" onChangeEvent={(t) => {let newData = currentFileChanging; newData.Title = t; setCurrentFileChanging(newData)}} type='text' placeholder='Title' maxCharCount={70}/></div>
+              <div id="Notes"><FloatInputArea ID="NOTES" onChangeEvent={(t) => {let newData = currentFileChanging; newData.Notes = t; setCurrentFileChanging(newData)}} type='area' placeholder='Notes' maxCharCount={0}/></div>
             </div>
-            <div id="Desciption"><FloatInputArea customEventName="changeDesc" onChangeEvent={(t) => {let newData = currentFileChanging; newData.Desciption = t; setCurrentFileChanging(newData)}} type='area' placeholder='Description' maxCharCount={5000}/></div>
+            <div id="Desciption"><FloatInputArea ID="DESC" onChangeEvent={(t) => {let newData = currentFileChanging; newData.Desciption = t; setCurrentFileChanging(newData)}} type='area' placeholder='Description' maxCharCount={5000}/></div>
           </div>
         </div>
         : ""}
