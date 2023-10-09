@@ -416,3 +416,11 @@ textarea, input {
 #All div:hover , #All div:active, #All div:focus{
   border: 1px solid rgba(255,255,255, 1) !important;
 }
+
+.HIDE {
+  display: none !important;
+}
+
+.SHOW {
+  display: block;
+}

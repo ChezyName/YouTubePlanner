@@ -33,14 +33,15 @@ function App({clientID, APIKey}) {
   const [allVideoPlans,setAllVideoPlans] = useState([]);
 
   const titleRef = useRef();
+  const descRef = useRef();
+  const notesRef = useRef();
+  const parentRef = useRef();
 
   function setVideoData(videoData){
-    let titleInput = document.getElementById("floatingInputTITLE");
-    let descInput = document.getElementById("floatingInputDESC");
-    let notesInput = document.getElementById("floatingInputNOTES");
-
-    console.log(titleRef)
-    if(titleRef.current) titleRef.current.target.value = videoData.Title;
+    //console.log(titleRef.current.value)
+    if(titleRef.current) titleRef.current.value = videoData.Title;
+    if(notesRef.current) notesRef.current.value = videoData.Notes;
+    if(descRef.current) descRef.current.value = videoData.Description;
   }
 
   function getChannel(auth) {
@@ -189,6 +190,12 @@ function App({clientID, APIKey}) {
   useEffect(() => {
     if(!getLogedIn) login();
   })
+
+  useEffect(() => {
+    console.log(editVideo ? "SHOW" : "HIDE");
+    parentRef.current.className = editVideo ? "SHOW" : "HIDE";
+    console.log(parentRef.current.className)
+  }, [editVideo])
   
 
   const VideoElement = ({id,data}) => {
@@ -242,7 +249,7 @@ function App({clientID, APIKey}) {
           <Spinner style={{width: '6vw', height: '6vw'}} variant='light' animation='border' role="status"/>
         </div> : ""}
 
-        {editVideo ? <div id="OverlayTop">
+        <div id="OverlayTop" ref={parentRef} className='HIDE'>
           <div id="EditNavbar">
             <button id="BackButton" onClick={() => {setEditVideo(false);  setCurrentFileChanging({}); setfileChaningID(""); }}><img src={LeftArrow} style={{filter: 'invert(100%)'}}/></button>
             <button id="videoID" disabled={true}>Video #{currentFileChanging.VideoNumber}</button>
@@ -254,12 +261,11 @@ function App({clientID, APIKey}) {
 
               </div>
               <div id="Title"><FloatInputField ref={titleRef} ID="TITLE" onChangeEvent={(t) => {let newData = currentFileChanging; newData.Title = t; setCurrentFileChanging(newData)}} type='text' placeholder='Title' maxCharCount={70}/></div>
-              <div id="Notes"><FloatInputArea ID="NOTES" onChangeEvent={(t) => {let newData = currentFileChanging; newData.Notes = t; setCurrentFileChanging(newData)}} type='area' placeholder='Notes' maxCharCount={0}/></div>
+              <div id="Notes"><FloatInputArea ref={notesRef} ID="NOTES" onChangeEvent={(t) => {let newData = currentFileChanging; newData.Notes = t; setCurrentFileChanging(newData)}} type='area' placeholder='Notes' maxCharCount={0}/></div>
             </div>
-            <div id="Desciption"><FloatInputArea ID="DESC" onChangeEvent={(t) => {let newData = currentFileChanging; newData.Desciption = t; setCurrentFileChanging(newData)}} type='area' placeholder='Description' maxCharCount={5000}/></div>
+            <div id="Desciption"><FloatInputArea ref={descRef} ID="DESC" onChangeEvent={(t) => {let newData = currentFileChanging; newData.Desciption = t; setCurrentFileChanging(newData)}} type='area' placeholder='Description' maxCharCount={5000}/></div>
           </div>
         </div>
-        : ""}
     </>
   )
 }
