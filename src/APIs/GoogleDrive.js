@@ -7,6 +7,8 @@ function JSONtoBlob(json){
     return jsonToBlob;
 }
 
+let MainFileID = "";
+
 export function uploadJSONGoogleDriveData(data, fileName, auth){
     return new Promise((resolve) => {
         var formData = new FormData();
@@ -33,6 +35,38 @@ export function uploadJSONGoogleDriveData(data, fileName, auth){
     });
 }
 
+export function UploadVideoPlan(auth, data, oldFileID = ""){
+    return new Promise((resolve) => {
+        let fileName = Date.now() + ".VideoPlan";
+        if(oldFileID == null || oldFileID == "" || oldFileID == undefined){
+            //create new file
+            uploadJSONGoogleDriveData(data,fileName,auth).then((d) => {resolve(d)});
+        }
+        else{
+            fetch("https://www.googleapis.com/upload/drive/v3/files/" + oldFileID, {
+                    method: "PATCH",
+                    body: JSON.stringify(data),
+                    headers: { Authorization: "Bearer " + auth },
+                })
+                .then((res) => resolve(res.json()));
+        }
+    });
+}
+
+export function UpdateMainFile(auth, data){
+    return new Promise(async (resolve) => {
+        if(MainFileID == "" || MainFileID == null || MainFileID == undefined){
+            await getMainFile();
+        }
+        fetch("https://www.googleapis.com/upload/drive/v3/files/" + MainFileID, {
+            method: "PATCH",
+            body: JSON.stringify(data),
+            headers: { Authorization: "Bearer " + auth },
+        })
+        .then((res) => resolve(res.json()));
+    });
+}
+
 export function getMainFile(auth){
     console.log("Getting JSON Data -> Auth Token: ", auth);
     return new Promise((resolve) => {
@@ -51,6 +85,7 @@ export function getMainFile(auth){
                 for(let i = 0; i < files.length; i++){
                     if(files[i].name == "MainDataFile"){
                         fileFound = true;
+                        MainFileID = files[i].id;
                         mainFileID = files[i].id;
                         break;
                     }
@@ -88,6 +123,35 @@ export function getSingleGoogleDriveData(auth,id){
     });
 }
 
+export function getAllVideoPlans(auth){
+    console.log("Getting JSON Data -> Auth Token: ", auth);
+    return new Promise((resolve) => {
+        fetch("https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&orderBy=createdTime&q:mimeType='application/json'", {
+        method: "GET",
+        headers: {
+            "Authorization": 'Bearer ' + auth,
+        },
+        }).then((response) => {
+            response.json().then(async (data) => {
+                //array of files
+                let files = data["files"];
+                let jsonFiles = [];
+
+                for(let i = 0; i < files.length; i++){
+                    if(files[i].name.contains(".VideoPlan")){
+                        let d = await getSingleGoogleDriveJSONData(auth,files[i].id);
+                        jsonFiles.push({
+                            fileID: files[i].id,
+                            data: d,
+                        })
+                    }
+                }
+                resolve(jsonFiles);
+            })
+        });
+    });
+}
+
 export function getAllGoogleDriveJSONData(auth){
     console.log("Getting JSON Data -> Auth Token: ", auth);
     return new Promise((resolve) => {
@@ -120,4 +184,7 @@ export default {
     LoadAllJSON: getAllGoogleDriveJSONData,
     Load: getSingleGoogleDriveData,
     LoadMainFile: getMainFile,
+    UploadPlan: UploadVideoPlan,
+    UpdateMainFile: UpdateMainFile,
+    LoadAllVideoPlans: getAllVideoPlans,
 } 
