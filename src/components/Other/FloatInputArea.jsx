@@ -1,4 +1,4 @@
-import React, {useState, useRef} from 'react'
+import React, {useState, forwardRef} from 'react'
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Form from 'react-bootstrap/Form';
 
@@ -14,8 +14,8 @@ const FloatInputArea = forwardRef(({type="text", placeholder="text",maxCharCount
                 if(maxCharCount > 0){
                   setRedOutlines(text.target.value.length > maxCharCount);
                   setWordCount(text.target.value.length);
-                  onChangeEvent(text.target.value);
                 }
+                onChangeEvent(text.target.value);
             }}/>
           </FloatingLabel>
         </>

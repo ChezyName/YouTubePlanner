@@ -192,9 +192,7 @@ function App({clientID, APIKey}) {
   })
 
   useEffect(() => {
-    console.log(editVideo ? "SHOW" : "HIDE");
     parentRef.current.className = editVideo ? "SHOW" : "HIDE";
-    console.log(parentRef.current.className)
   }, [editVideo])
   
 
@@ -207,6 +205,13 @@ function App({clientID, APIKey}) {
       setEditVideo(true);
     }}>{data.Title}</div>
   }
+
+  document.addEventListener("keydown", function(e) {
+    if (e.keyCode === 83 && (navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey)) {
+      e.preventDefault();
+      if(editVideo) SaveVideo();
+    }
+  }, false);
 
   return (
     <>
@@ -263,7 +268,7 @@ function App({clientID, APIKey}) {
               <div id="Title"><FloatInputField ref={titleRef} ID="TITLE" onChangeEvent={(t) => {let newData = currentFileChanging; newData.Title = t; setCurrentFileChanging(newData)}} type='text' placeholder='Title' maxCharCount={70}/></div>
               <div id="Notes"><FloatInputArea ref={notesRef} ID="NOTES" onChangeEvent={(t) => {let newData = currentFileChanging; newData.Notes = t; setCurrentFileChanging(newData)}} type='area' placeholder='Notes' maxCharCount={0}/></div>
             </div>
-            <div id="Desciption"><FloatInputArea ref={descRef} ID="DESC" onChangeEvent={(t) => {let newData = currentFileChanging; newData.Desciption = t; setCurrentFileChanging(newData)}} type='area' placeholder='Description' maxCharCount={5000}/></div>
+            <div id="Desciption"><FloatInputArea ref={descRef} ID="DESC" onChangeEvent={(t) => {let newData = currentFileChanging; newData.Description = t; setCurrentFileChanging(newData)}} type='area' placeholder='Description' maxCharCount={5000}/></div>
           </div>
         </div>
     </>
