@@ -25,7 +25,7 @@ export function UploadImage(auth, img, fileName){
         var fileMetadata = {
             "name": fileName,
             "parents": ["appDataFolder"],
-            "mimeType": "application/json"
+            "mimeType": fileName.type
         };
 
         formData.append("metadata", JSONtoBlob(fileMetadata), {
@@ -166,7 +166,11 @@ export function getGoogleDriveBlobData(auth,id){
             headers: {
                 "Authorization": 'Bearer ' + auth,
             },
-        }).then((d) => {resolve(d.blob())});
+        }).then((response) => response.blob())
+        .then(async (blob) => {
+            console.log(blob);
+            resolve(blob)
+        });
     });
 }
 
@@ -187,6 +191,11 @@ export function getAllVideoPlans(auth){
                 for(let i = 0; i < files.length; i++){
                     if(files[i].name.contains(".VideoPlan")){
                         let d = await getSingleGoogleDriveJSONData(auth,files[i].id);
+                        let thumbnail;
+                        console.log(d.ThumbnailID, "Loading This Up.")
+                        if(d.ThumbnailID) thumbnail = await getGoogleDriveBlobData(auth,d.ThumbnailID);
+                        const blobUrl = URL.createObjectURL(thumbnail)
+                        d.Thumbnail = blobUrl;
                         jsonFiles.push({
                             fileID: files[i].id,
                             data: d,

@@ -44,10 +44,17 @@ function App({clientID, APIKey}) {
     if(titleRef.current) titleRef.current.value = videoData.Title;
     if(notesRef.current) notesRef.current.value = videoData.Notes;
     if(descRef.current) descRef.current.value = videoData.Description;
-    if(videoData.ThumbnailID != "" && thumbnailRef.current){
+    if(videoData.Thumbnail != "" && thumbnailRef.current){
+      thumbnailRef.current.src = videoData.Thumbnail;
+    }
+    else if(videoData.ThumbnailID && videoData.Thumbnail.type && thumbnailRef.current){
       let data = await GoogleDrive.LoadBlob(authToken,videoData.ThumbnailID);
       const blobUrl = URL.createObjectURL(data)
       thumbnailRef.current.src = blobUrl;
+      
+      let newFileChange = currentFileChanging;
+      newFileChange.Thumbnail = blobUrl;
+      setCurrentFileChanging(newFileChange)
     }
     else if(videoData.ThumbnailID == ""){
       thumbnailRef.current.src = "";
@@ -125,6 +132,12 @@ function App({clientID, APIKey}) {
             for(let i = 0; i < d.activeVideoPlans.length; i++){
               console.log("Loading Up Video Plan #" + i + " - " + d.activeVideoPlans[i]);
               let loadedData = await GoogleDrive.Load(tokenResponse.access_token,d.activeVideoPlans[i]);
+              if(loadedData.ThumbnailID){
+                let thumbnail = await GoogleDrive.LoadBlob(tokenResponse.access_token,loadedData.ThumbnailID);
+                console.log(thumbnail.type);
+                const blobUrl = URL.createObjectURL(thumbnail)
+                loadedData.Thumbnail = blobUrl;
+              }
               videoPlans.push(
                 {
                   id: d.activeVideoPlans[i],
@@ -179,6 +192,11 @@ function App({clientID, APIKey}) {
     for(let i = 0; i < mainFileData.activeVideoPlans.length; i++){
       console.log("Loading Up Video Plan #" + i + " - " + mainFileData.activeVideoPlans[i]);
       let loadedData = await GoogleDrive.Load(authToken,mainFileData.activeVideoPlans[i]);
+      if(loadedData.ThumbnailID){
+        let thumbnail = await GoogleDrive.LoadBlob(authToken,loadedData.ThumbnailID);
+        const blobUrl = URL.createObjectURL(thumbnail)
+        loadedData.Thumbnail = blobUrl;
+      }
       videoPlans.push(
         {
           id: mainFileData.activeVideoPlans[i],
@@ -280,9 +298,7 @@ function App({clientID, APIKey}) {
                 newData.ThumbnailID = thumbnailID;
                 setCurrentFileChanging(newData);
                 if(thumbnailRef.current) {
-                  let Blob = await GoogleDrive.ImageToBlob(fileToUpload);
-                  const blobUrl = URL.createObjectURL(Blob)
-                  thumbnailRef.current.src = blobUrl;
+                  thumbnailRef.current.src = fileToUpload;
                 }
               }}/>
               <img id="Thumbnail" ref={thumbnailRef} onClick={() => {fileInput.current.click();}}></img>
