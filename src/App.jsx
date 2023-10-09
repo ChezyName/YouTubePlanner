@@ -134,7 +134,6 @@ function App({clientID, APIKey}) {
               let loadedData = await GoogleDrive.Load(tokenResponse.access_token,d.activeVideoPlans[i]);
               if(loadedData.ThumbnailID){
                 let thumbnail = await GoogleDrive.LoadBlob(tokenResponse.access_token,loadedData.ThumbnailID);
-                console.log(thumbnail.type);
                 const blobUrl = URL.createObjectURL(thumbnail)
                 loadedData.Thumbnail = blobUrl;
               }
@@ -296,10 +295,17 @@ function App({clientID, APIKey}) {
                 let thumbnailID = data.id;
                 let newData = currentFileChanging;
                 newData.ThumbnailID = thumbnailID;
-                setCurrentFileChanging(newData);
                 if(thumbnailRef.current) {
-                  thumbnailRef.current.src = fileToUpload;
+                  const doThumbnailChange = async function(){
+                    let imageToBlob = await GoogleDrive.ImageToBlob(fileToUpload);
+                    let blobURL = URL.createObjectURL(new Blob([imageToBlob],{type: fileToUpload.type}));
+                    thumbnailRef.current.src = blobURL;
+                    newData.Thumbnail = blobURL;
+                    setCurrentFileChanging(newData);
+                  }
+                  doThumbnailChange();
                 }
+                setCurrentFileChanging(newData);
               }}/>
               <img id="Thumbnail" ref={thumbnailRef} onClick={() => {fileInput.current.click();}}></img>
               <div id="Title"><FloatInputField ref={titleRef} ID="TITLE" onChangeEvent={(t) => {let newData = currentFileChanging; newData.Title = t; setCurrentFileChanging(newData)}} type='text' placeholder='Title' maxCharCount={70}/></div>
