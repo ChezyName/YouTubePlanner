@@ -7,6 +7,42 @@ function JSONtoBlob(json){
     return jsonToBlob;
 }
 
+export function ImagetoBlob(img){
+    return new Promise((resolve) => {
+        var reader = new FileReader();
+        reader.addEventListener('load', (event) => {
+            resolve(event.target.result);
+        });
+        reader.readAsText(img);
+    })
+}
+
+export function UploadImage(auth, img, fileName){
+    return new Promise((resolve) => {
+        //const ImageBlob = await ImagetoBlob(img);
+
+        var formData = new FormData();
+        var fileMetadata = {
+            "name": fileName,
+            "parents": ["appDataFolder"],
+            "mimeType": "application/json"
+        };
+
+        formData.append("metadata", JSONtoBlob(fileMetadata), {
+            contentType: "application/json; charset=UTF-8",
+        });
+
+        formData.append("image", img);
+
+        fetch("https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart", {
+                method: "POST",
+                body: formData,
+                headers: { Authorization: "Bearer " + auth },
+            })
+            .then((res) => resolve(res.json()));
+    });
+}
+
 let MainFileID = "";
 
 export function uploadJSONGoogleDriveData(data, fileName, auth){
@@ -123,6 +159,17 @@ export function getSingleGoogleDriveData(auth,id){
     });
 }
 
+export function getGoogleDriveBlobData(auth,id){
+    return new Promise((resolve) => {
+        fetch(`https://www.googleapis.com/drive/v3/files/${id}?alt=media`, {
+            method: "GET",
+            headers: {
+                "Authorization": 'Bearer ' + auth,
+            },
+        }).then((d) => {resolve(d.blob())});
+    });
+}
+
 export function getAllVideoPlans(auth){
     console.log("Getting JSON Data -> Auth Token: ", auth);
     return new Promise((resolve) => {
@@ -183,8 +230,11 @@ export default {
     UploadJSON: uploadJSONGoogleDriveData,
     LoadAllJSON: getAllGoogleDriveJSONData,
     Load: getSingleGoogleDriveData,
+    LoadBlob: getGoogleDriveBlobData,
     LoadMainFile: getMainFile,
     UploadPlan: UploadVideoPlan,
     UpdateMainFile: UpdateMainFile,
     LoadAllVideoPlans: getAllVideoPlans,
+    ImageToBlob: ImagetoBlob,
+    UploadImage: UploadImage,
 } 

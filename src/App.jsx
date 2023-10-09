@@ -36,12 +36,22 @@ function App({clientID, APIKey}) {
   const descRef = useRef();
   const notesRef = useRef();
   const parentRef = useRef();
+  const fileInput = useRef();
+  const thumbnailRef = useRef();
 
-  function setVideoData(videoData){
+  async function setVideoData(videoData){
     //console.log(titleRef.current.value)
     if(titleRef.current) titleRef.current.value = videoData.Title;
     if(notesRef.current) notesRef.current.value = videoData.Notes;
     if(descRef.current) descRef.current.value = videoData.Description;
+    if(videoData.ThumbnailID != "" && thumbnailRef.current){
+      let data = await GoogleDrive.LoadBlob(authToken,videoData.ThumbnailID);
+      const blobUrl = URL.createObjectURL(data)
+      thumbnailRef.current.src = blobUrl;
+    }
+    else if(videoData.ThumbnailID == ""){
+      thumbnailRef.current.src = "";
+    }
   }
 
   function getChannel(auth) {
@@ -197,8 +207,8 @@ function App({clientID, APIKey}) {
   
 
   const VideoElement = ({id,data}) => {
-    //console.log("Loading New Element: " + id);
     return <div onClick={(e) => {
+      console.log(data);
       setVideoData(data);
       setCurrentFileChanging(data);
       setfileChaningID(id);
@@ -262,9 +272,20 @@ function App({clientID, APIKey}) {
           </div>
           <div id="Overlay2">
             <div id="ThumbnailTitle">
-              <div id="Thumbnail">
-
-              </div>
+              <input ref={fileInput} className="HIDE" type='file' name={"ImageFile"} accept="image/*" onChange={async (event) => {
+                let fileToUpload = event.target.files[0];
+                let data = await GoogleDrive.UploadImage(authToken,fileToUpload,currentFileChanging.Title);
+                let thumbnailID = data.id;
+                let newData = currentFileChanging;
+                newData.ThumbnailID = thumbnailID;
+                setCurrentFileChanging(newData);
+                if(thumbnailRef.current) {
+                  let Blob = await GoogleDrive.ImageToBlob(fileToUpload);
+                  const blobUrl = URL.createObjectURL(Blob)
+                  thumbnailRef.current.src = blobUrl;
+                }
+              }}/>
+              <img id="Thumbnail" ref={thumbnailRef} onClick={() => {fileInput.current.click();}}></img>
               <div id="Title"><FloatInputField ref={titleRef} ID="TITLE" onChangeEvent={(t) => {let newData = currentFileChanging; newData.Title = t; setCurrentFileChanging(newData)}} type='text' placeholder='Title' maxCharCount={70}/></div>
               <div id="Notes"><FloatInputArea ref={notesRef} ID="NOTES" onChangeEvent={(t) => {let newData = currentFileChanging; newData.Notes = t; setCurrentFileChanging(newData)}} type='area' placeholder='Notes' maxCharCount={0}/></div>
             </div>
