@@ -292,18 +292,19 @@ function App({clientID, APIKey}) {
               <input ref={fileInput} className="HIDE" type='file' name={"ImageFile"} accept="image/*" onChange={async (event) => {
                 let fileToUpload = event.target.files[0];
                 let data = await GoogleDrive.UploadImage(authToken,fileToUpload,currentFileChanging.Title);
+                console.log(data);
                 let thumbnailID = data.id;
                 let newData = currentFileChanging;
                 newData.ThumbnailID = thumbnailID;
                 if(thumbnailRef.current) {
-                  const doThumbnailChange = async function(){
-                    let imageToBlob = await GoogleDrive.ImageToBlob(fileToUpload);
-                    let blobURL = URL.createObjectURL(new Blob([imageToBlob],{type: fileToUpload.type}));
-                    thumbnailRef.current.src = blobURL;
-                    newData.Thumbnail = blobURL;
-                    setCurrentFileChanging(newData);
-                  }
-                  doThumbnailChange();
+                  let imageBlob = await GoogleDrive.ImageToBlob(fileToUpload);
+                  console.log(imageBlob);
+                  //const blobUrl = URL.createObjectURL(imageBlob)
+                  thumbnailRef.current.src = imageBlob;
+                  
+                  let newFileChange = currentFileChanging;
+                  newFileChange.Thumbnail = blobUrl;
+                  setCurrentFileChanging(newFileChange)
                 }
                 setCurrentFileChanging(newData);
               }}/>

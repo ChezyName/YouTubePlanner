@@ -10,10 +10,10 @@ function JSONtoBlob(json){
 export function ImagetoBlob(img){
     return new Promise((resolve) => {
         var reader = new FileReader();
-        reader.addEventListener('load', (event) => {
+        reader.addEventListener("load", (event) => {
             resolve(event.target.result);
         });
-        reader.readAsText(img);
+        reader.readAsDataURL(img);
     })
 }
 
