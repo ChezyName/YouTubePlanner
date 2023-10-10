@@ -399,7 +399,7 @@ textarea, input {
   margin-top: 2vh;
   justify-content: center;
   grid-template-columns: repeat(3, 1fr);
-  grid-column-gap: 1%;
+  grid-gap: 1%;
 }
 
 #All div{
