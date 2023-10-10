@@ -230,7 +230,7 @@ function App({clientID, APIKey}) {
       setCurrentFileChanging(data);
       setfileChaningID(id);
       setEditVideo(true);
-    }}>{data.Title}</div>
+    }}><img src={data.Thumbnail} style={{width: "100%", height: "100%"}}/>{data.Title}</div>
   }
 
   document.addEventListener("keydown", function(e) {
@@ -242,7 +242,43 @@ function App({clientID, APIKey}) {
 
   return (
     <>
-      <div id="ChannelInfo">
+        <div id="OverlayTop" ref={parentRef} className='HIDE'>
+          <div id="EditNavbar">
+            <button id="BackButton" onClick={() => {setEditVideo(false);  setCurrentFileChanging({}); setfileChaningID(""); }}><img src={LeftArrow} style={{filter: 'invert(100%)'}}/></button>
+            <button id="videoID" disabled={true}>Video #{currentFileChanging.VideoNumber}</button>
+            <button id="SaveButton" onClick={SaveVideo}>SAVE</button>
+          </div>
+          <div id="Overlay2">
+            <div id="ThumbnailTitle">
+              <input ref={fileInput} className="HIDE" type='file' name={"ImageFile"} accept="image/*" onChange={async (event) => {
+                let fileToUpload = event.target.files[0];
+                let data = await GoogleDrive.UploadImage(authToken,fileToUpload,currentFileChanging.Title);
+                console.log(data);
+                let thumbnailID = data.id;
+                let newData = currentFileChanging;
+                newData.ThumbnailID = thumbnailID;
+                if(thumbnailRef.current) {
+                  let imageBlob = await GoogleDrive.ImageToBlob(fileToUpload);
+                  console.log(imageBlob);
+                  //const blobUrl = URL.createObjectURL(imageBlob)
+                  thumbnailRef.current.src = imageBlob;
+                  
+                  let newFileChange = currentFileChanging;
+                  newFileChange.Thumbnail = blobUrl;
+                  setCurrentFileChanging(newFileChange)
+                }
+                setCurrentFileChanging(newData);
+              }}/>
+              <img id="Thumbnail" ref={thumbnailRef} onClick={() => {fileInput.current.click();}}></img>
+              <div id="Title"><FloatInputField ref={titleRef} ID="TITLE" onChangeEvent={(t) => {let newData = currentFileChanging; newData.Title = t; setCurrentFileChanging(newData)}} type='text' placeholder='Title' maxCharCount={70}/></div>
+              <div id="Notes"><FloatInputArea ref={notesRef} ID="NOTES" onChangeEvent={(t) => {let newData = currentFileChanging; newData.Notes = t; setCurrentFileChanging(newData)}} type='area' placeholder='Notes' maxCharCount={0}/></div>
+            </div>
+            <div id="Desciption"><FloatInputArea ref={descRef} ID="DESC" onChangeEvent={(t) => {let newData = currentFileChanging; newData.Description = t; setCurrentFileChanging(newData)}} type='area' placeholder='Description' maxCharCount={5000}/></div>
+          </div>
+        </div>
+
+
+        <div id="ChannelInfo">
           <div id="ChannelNameIcon">
             <img id="ChannelIcon" src={channelIcon}/>
             <div id="TextHolder">
@@ -280,43 +316,15 @@ function App({clientID, APIKey}) {
         {!getLogedIn ? <div id="Overlay" style={{objectFit: "contain", backgroundColor: '#1F1F1F', justifyContent: 'center', alignItems: 'center'}}>
           <Spinner style={{width: '6vw', height: '6vw'}} variant='light' animation='border' role="status"/>
         </div> : ""}
-
-        <div id="OverlayTop" ref={parentRef} className='HIDE'>
-          <div id="EditNavbar">
-            <button id="BackButton" onClick={() => {setEditVideo(false);  setCurrentFileChanging({}); setfileChaningID(""); }}><img src={LeftArrow} style={{filter: 'invert(100%)'}}/></button>
-            <button id="videoID" disabled={true}>Video #{currentFileChanging.VideoNumber}</button>
-            <button id="SaveButton" onClick={SaveVideo}>SAVE</button>
-          </div>
-          <div id="Overlay2">
-            <div id="ThumbnailTitle">
-              <input ref={fileInput} className="HIDE" type='file' name={"ImageFile"} accept="image/*" onChange={async (event) => {
-                let fileToUpload = event.target.files[0];
-                let data = await GoogleDrive.UploadImage(authToken,fileToUpload,currentFileChanging.Title);
-                console.log(data);
-                let thumbnailID = data.id;
-                let newData = currentFileChanging;
-                newData.ThumbnailID = thumbnailID;
-                if(thumbnailRef.current) {
-                  let imageBlob = await GoogleDrive.ImageToBlob(fileToUpload);
-                  console.log(imageBlob);
-                  //const blobUrl = URL.createObjectURL(imageBlob)
-                  thumbnailRef.current.src = imageBlob;
-                  
-                  let newFileChange = currentFileChanging;
-                  newFileChange.Thumbnail = blobUrl;
-                  setCurrentFileChanging(newFileChange)
-                }
-                setCurrentFileChanging(newData);
-              }}/>
-              <img id="Thumbnail" ref={thumbnailRef} onClick={() => {fileInput.current.click();}}></img>
-              <div id="Title"><FloatInputField ref={titleRef} ID="TITLE" onChangeEvent={(t) => {let newData = currentFileChanging; newData.Title = t; setCurrentFileChanging(newData)}} type='text' placeholder='Title' maxCharCount={70}/></div>
-              <div id="Notes"><FloatInputArea ref={notesRef} ID="NOTES" onChangeEvent={(t) => {let newData = currentFileChanging; newData.Notes = t; setCurrentFileChanging(newData)}} type='area' placeholder='Notes' maxCharCount={0}/></div>
-            </div>
-            <div id="Desciption"><FloatInputArea ref={descRef} ID="DESC" onChangeEvent={(t) => {let newData = currentFileChanging; newData.Description = t; setCurrentFileChanging(newData)}} type='area' placeholder='Description' maxCharCount={5000}/></div>
-          </div>
-        </div>
     </>
   )
 }
 
 export default App
+
+//Hide Broken Images
+document.addEventListener("DOMContentLoaded", function(event) {
+  document.querySelectorAll('img').forEach(function(img){
+   img.onerror = function(){this.style.display='none';};
+  })
+});

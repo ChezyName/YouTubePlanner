@@ -3,6 +3,8 @@ html, body, #root {
   height: 100%;
   display: block;
   background-color: #1F1F1F;
+  overflow-y: auto;
+  overflow-x: none !important
 }
 
 #topHalf {
@@ -174,10 +176,11 @@ img {
 #OverlayTop {
   width: 100vw;
   height: 100vh;
-  position: absolute;
+  position: -webkit-sticky !important;
+  position: sticky !important;
+  z-index: 999 !important;
   background-color: #282828;
   top: 0;
-  left: 0;
   user-select: none;
   display: grid;
   grid-template-rows: 8% 92%;
@@ -396,25 +399,29 @@ textarea, input {
   margin-top: 2vh;
   justify-content: center;
   grid-template-columns: repeat(3, 1fr);
-  grid-column-gap: 10px;
+  grid-column-gap: 1%;
 }
 
 #All div{
-  width: 100%;
-  height: 100%;
-  aspect-ratio: 16 / 9;
+  width: auto;
+  height: auto;
   background-color: black;
   color: white;
   border: 1px solid rgba(255,255,255, 0.5) !important;
   text-align: center;
-  display: flex;
-  justify-content: center;
-  align-items: flex-end;
+  display: grid;
   user-select: none;
+}
+
+#All div img {
+  width: 100%;
+  height: 100%;
+  border: 1px solid rgba(255,255,255, 0.5);
 }
 
 #All div:hover , #All div:active, #All div:focus{
   border: 1px solid rgba(255,255,255, 1) !important;
+  background-color: #121212;
 }
 
 .HIDE {
