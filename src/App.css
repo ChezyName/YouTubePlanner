@@ -36,7 +36,7 @@ img {
 
 #ChannelInfo, #LatestVideo {
   width: 80%;
-  height: 40%;
+  height: 45%;
   position: relative;
   display: flex;
   background-color: #282828;
@@ -102,10 +102,12 @@ img {
 
 #ChannelStatistics {
   width: auto;
-  height: 100%;
-  margin: 2vw;
-  display: flex;
-  flex-direction: column;
+  height: auto;
+  margin-left: 2vw;
+  margin-right: 2vw;
+  display: grid;
+  grid-template-rows: repeat(4,1fr);
+  margin-bottom: 5%;
 }
 
 #ChannelStatistics div {
@@ -119,6 +121,10 @@ img {
   user-select: none;
   margin-top: auto;
   color: white !important;
+}
+
+#StorageSpace {
+  height: 8% !important;
 }
 
 #ChannelStatistics div div:last-child {
@@ -360,6 +366,12 @@ textarea, input {
   inherits: false;
 }
 
+@property --storage {
+  syntax: '<integer>';
+  initial-value: 0;
+  inherits: false;
+}
+
 .subs {
   transition: --subscribers 1.25s ease-in;
   counter-reset: subscribers var(--subscribers);
@@ -380,6 +392,13 @@ textarea, input {
 }
 .videos::after {
   content: counter(videos);
+}
+.storage {
+  transition: --storage 1.25s ease-in;
+  counter-reset: storage var(--storage);
+}
+.storage::after {
+  content: counter(storage);
 }
 
 

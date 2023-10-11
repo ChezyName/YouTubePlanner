@@ -159,6 +159,21 @@ export function getSingleGoogleDriveData(auth,id){
     });
 }
 
+export function deleteGoogleDriveFile(auth,id){
+    return new Promise((resolve) => {
+        fetch(`https://www.googleapis.com/drive/v2/files/${id}`, {
+            method: "DELETE",
+            headers: {
+                "Authorization": 'Bearer ' + auth,
+            },
+        }).then((response) => response.blob())
+        .then(async (blob) => {
+            console.log(blob);
+            resolve(blob)
+        });
+    });
+}
+
 export function getGoogleDriveBlobData(auth,id){
     return new Promise((resolve) => {
         fetch(`https://www.googleapis.com/drive/v3/files/${id}?alt=media`, {
@@ -235,6 +250,21 @@ export function getAllGoogleDriveJSONData(auth){
     });
 }
 
+export function getGoogleDriveData(auth){
+    return new Promise((resolve) => {
+        fetch(`https://www.googleapis.com/drive/v3/about?fields=storageQuota`, {
+            method: "GET",
+            headers: {
+                "Authorization": 'Bearer ' + auth,
+            },
+        }).then((response) => response.json())
+        .then(async (json) => {
+            console.log(json);
+            resolve(json)
+        });
+    });
+}
+
 export default {
     UploadJSON: uploadJSONGoogleDriveData,
     LoadAllJSON: getAllGoogleDriveJSONData,
@@ -246,4 +276,6 @@ export default {
     LoadAllVideoPlans: getAllVideoPlans,
     ImageToBlob: ImagetoBlob,
     UploadImage: UploadImage,
+    Delete: deleteGoogleDriveFile,
+    GetData: getGoogleDriveData,
 } 

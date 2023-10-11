@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { useGoogleLogin, hasGrantedAllScopesGoogle, GoogleLogin } from '@react-oauth/google';
 import GoogleDrive, { UpdateMainFile } from './APIs/GoogleDrive';
+import ProgressBar from 'react-bootstrap/ProgressBar'
 
 import LeftArrow from "./assets/BackArrow.svg"
 
@@ -127,6 +128,14 @@ function App({clientID, APIKey}) {
           console.log(d);
           setMainFileData(d);
           setHasVideos(d.videoCount > 0);
+
+          window.CSS.registerProperty({
+            name: '--storage',
+            syntax: '<integer>',
+            initialValue: d.videoCount,
+            inherits: false,
+          })
+
           if(d.videoCount > 0){
             let videoPlans = [];
             for(let i = 0; i < d.activeVideoPlans.length; i++){
@@ -209,6 +218,11 @@ function App({clientID, APIKey}) {
 
   async function SaveVideo(){
     console.log(currentFileChanging);
+    if(currentFileChanging.OldThumbnailID && currentFileChanging.OldThumbnailID != ""){
+      await GoogleDrive.Delete(authToken,currentFileChanging.OldThumbnailID);
+      console.log("Removed ", currentFileChanging.OldThumbnailID);
+      delete currentFileChanging.OldThumbnailID;
+    }
     await GoogleDrive.UploadPlan(authToken,currentFileChanging,fileChaningID);
     setEditVideo(false);
     GetAllVideoPlans();
@@ -256,6 +270,7 @@ function App({clientID, APIKey}) {
                 console.log(data);
                 let thumbnailID = data.id;
                 let newData = currentFileChanging;
+                newData.OldThumbnailID = newData.ThumbnailID;
                 newData.ThumbnailID = thumbnailID;
                 if(thumbnailRef.current) {
                   let imageBlob = await GoogleDrive.ImageToBlob(fileToUpload);
@@ -264,7 +279,7 @@ function App({clientID, APIKey}) {
                   thumbnailRef.current.src = imageBlob;
                   
                   let newFileChange = currentFileChanging;
-                  newFileChange.Thumbnail = blobUrl;
+                  //newFileChange.Thumbnail = blobUrl;
                   setCurrentFileChanging(newFileChange)
                 }
                 setCurrentFileChanging(newData);
@@ -319,6 +334,11 @@ function App({clientID, APIKey}) {
               <div>
                 <div>Videos</div>
                 <div className='videos'></div>
+              </div>
+
+              <div>
+                <div>Video Plans</div>
+                <div className='storage'></div>
               </div>
             </div>
         </div>
