@@ -35,6 +35,7 @@ function App({clientID, APIKey}) {
   const [fileChaningID,setfileChaningID] = useState("");
   const [allVideoPlans,setAllVideoPlans] = useState([]);
   const [deleteEverything,setModalDE] = useState(false);
+  const [deleteOne,setModalOne] = useState(false);
 
   const titleRef = useRef();
   const descRef = useRef();
@@ -157,6 +158,7 @@ function App({clientID, APIKey}) {
               )
             }
             console.log("Loaded All Video Plans, Count: " + videoPlans.length);
+            videoPlans.reverse();
             setAllVideoPlans(videoPlans);
           }
        })
@@ -216,9 +218,10 @@ function App({clientID, APIKey}) {
       )
     }
     console.log("Loaded All Video Plans, Count: " + videoPlans.length);
+    videoPlans.reverse();
     setAllVideoPlans(videoPlans);
 
-    document.documentElement.setProperty('--storage', videoPlans.length);
+    //document.documentElement.setProperty('--storage', videoPlans.length);
   }
 
   async function SaveVideo(){
@@ -265,12 +268,29 @@ function App({clientID, APIKey}) {
           onClosed={() => {setModalDE(false);}} onConfirmPressed={async () => {
             await GoogleDrive.DeleteAll(authToken);
             await GetAllVideoPlans();
-          }}/>
+            setModalDE(false);
+        }}/>
+
+        <ModalWindow setShow={deleteOne} title={"Delete Single Video?"} body={"Are you sure you want to delete `" + currentFileChanging.Title + "'?"}
+          onClosed={() => {setModalOne(false);}} onConfirmPressed={async () => {
+            await GoogleDrive.Delete(authToken,fileChaningID);
+
+            console.log(mainFileData);
+            let d = mainFileData;
+            d.activeVideoPlans.splice(d.activeVideoPlans.indexOf(fileChaningID),1);
+            d.videoCount -= 1;
+            setMainFileData(d);
+            await UpdateMainFile(authToken, d);
+
+            setModalOne(false);
+            setEditVideo(false);
+            GetAllVideoPlans();
+        }}/>
 
         <div id="OverlayTop" ref={parentRef} className='HIDE'>
           <div id="EditNavbar">
             <button id="BackButton" onClick={() => {setEditVideo(false);  setCurrentFileChanging({}); setfileChaningID(""); }}><img src={LeftArrow} style={{filter: 'invert(100%)'}}/></button>
-            <button id="DeleteButton" onClick={() => {}}><img src={Trash} style={{filter: 'invert(100%)'}}/></button>
+            <button id="DeleteButton" onClick={() => {setModalOne(true)}}><img src={Trash} style={{filter: 'invert(100%)'}}/></button>
             <button id="videoID" disabled={true}>Video #{currentFileChanging.VideoNumber}</button>
             <button id="SaveButton" onClick={SaveVideo}>SAVE</button>
           </div>
