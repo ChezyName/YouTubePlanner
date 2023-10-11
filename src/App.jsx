@@ -1,7 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import { useGoogleLogin, hasGrantedAllScopesGoogle, GoogleLogin } from '@react-oauth/google';
 import GoogleDrive, { UpdateMainFile } from './APIs/GoogleDrive';
-import ProgressBar from 'react-bootstrap/ProgressBar'
 
 import LeftArrow from "./assets/BackArrow.svg"
 import Trash from "./assets/Trash.svg"
