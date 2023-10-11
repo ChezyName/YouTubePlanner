@@ -4,6 +4,7 @@ import GoogleDrive, { UpdateMainFile } from './APIs/GoogleDrive';
 import ProgressBar from 'react-bootstrap/ProgressBar'
 
 import LeftArrow from "./assets/BackArrow.svg"
+import Trash from "./assets/Trash.svg"
 
 import './App.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -338,7 +339,7 @@ function App({clientID, APIKey}) {
 
               <div>
                 <div>Video Plans</div>
-                <div className='storage'></div>
+                <div className='storage'><button id="Trash" style={{width: "100%", height: "100%", padding: "0", backgroundColor: 'transparent'}}><img src={Trash} style={{filter: 'invert(100%)'}}/></button></div>
               </div>
             </div>
         </div>

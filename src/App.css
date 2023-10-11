@@ -102,7 +102,7 @@ img {
 
 #ChannelStatistics {
   width: auto;
-  height: auto;
+  height: 100%;
   margin-left: 2vw;
   margin-right: 2vw;
   display: grid;
@@ -112,7 +112,7 @@ img {
 
 #ChannelStatistics div {
   width: 100%;
-  height: auto;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -397,7 +397,7 @@ textarea, input {
   transition: --storage 1.25s ease-in;
   counter-reset: storage var(--storage);
 }
-.storage::after {
+.storage::before {
   content: counter(storage);
 }
 
@@ -462,4 +462,13 @@ textarea, input {
 #UploadDownload button:hover , #UploadDownload button:active, #UploadDownload button:focus{
   border: 1px solid rgba(255,255,255, 1) !important;
   background-color: #121212;
+}
+
+#Trash {
+  border: none;
+}
+
+#Trash:hover , #Trash:active, #Trash:focus{
+  border: none;
+  background-color: transparent;
 }
