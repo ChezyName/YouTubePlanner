@@ -166,10 +166,10 @@ export function deleteGoogleDriveFile(auth,id){
             headers: {
                 "Authorization": 'Bearer ' + auth,
             },
-        }).then((response) => response.blob())
-        .then(async (blob) => {
-            console.log(blob);
-            resolve(blob)
+        })
+        .then((res) => {
+            console.log(res);
+            resolve(res)
         });
     });
 }
@@ -205,7 +205,7 @@ export function getAllVideoPlans(auth){
 
                 for(let i = 0; i < files.length; i++){
                     if(files[i].name.contains(".VideoPlan")){
-                        let d = await getSingleGoogleDriveJSONData(auth,files[i].id);
+                        let d = await getSingleGoogleDriveData(auth,files[i].id);
                         let thumbnail;
                         console.log(d.ThumbnailID, "Loading This Up.")
                         if(d.ThumbnailID) thumbnail = await getGoogleDriveBlobData(auth,d.ThumbnailID);
@@ -215,6 +215,38 @@ export function getAllVideoPlans(auth){
                             fileID: files[i].id,
                             data: d,
                         })
+                    }
+                }
+                resolve(jsonFiles);
+            })
+        });
+    });
+}
+
+export function DeleteEverything(auth){
+    console.log("Removing All Data...");
+    return new Promise((resolve) => {
+        fetch("https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&orderBy=createdTime", {
+        method: "GET",
+        headers: {
+            "Authorization": 'Bearer ' + auth,
+        },
+        }).then((response) => {
+            response.json().then(async (data) => {
+                //array of files
+                let files = data["files"];
+                let jsonFiles = [];
+
+                for(let i = 0; i < files.length; i++){
+                    if(files[i].name == "MainDataFile"){
+                        let d = await getSingleGoogleDriveData(auth,files[i].id);
+                        d.videoCount = 0;
+                        d.activeVideoPlans = [];
+                        console.log("Override Video File: ", d);
+                        await UpdateMainFile(auth,d);
+                    }
+                    else{
+                        await deleteGoogleDriveFile(auth,files[i].id);
                     }
                 }
                 resolve(jsonFiles);
@@ -238,7 +270,7 @@ export function getAllGoogleDriveJSONData(auth){
                 let jsonFiles = [];
 
                 for(let i = 0; i < files.length; i++){
-                    let d = await getSingleGoogleDriveJSONData(auth,files[i].id);
+                    let d = await getSingleGoogleDriveData(auth,files[i].id);
                     jsonFiles.push({
                         fileID: files[i].id,
                         data: d,
@@ -278,4 +310,5 @@ export default {
     UploadImage: UploadImage,
     Delete: deleteGoogleDriveFile,
     GetData: getGoogleDriveData,
+    DeleteAll: DeleteEverything,
 } 

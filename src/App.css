@@ -487,6 +487,8 @@ textarea, input {
   border: none;
   border-radius: 0;
   border: 1px solid transparent;
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 #Trash:hover , #Trash:active, #Trash:focus{
@@ -496,4 +498,36 @@ textarea, input {
 
 #Trash:hover , #Trash:active, #Trash:focus img {
   filter: brightness(50%) sepia(100) saturate(100) hue-rotate(25deg);
+}
+
+#nTrash {
+  border: none;
+  border-radius: 0;
+  border: 1px solid transparent;
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+#nTrash:hover , #nTrash:active, #nTrash:focus{
+  border: 1px solid green;
+  background-color: transparent;
+  color: green;
+}
+
+.modal-content {
+  background-color: #1F1F1F !important;
+  border: 1px solid white !important;
+}
+
+.modal-header .btn-close {
+  filter: invert(100%);
+}
+
+.modal-body, .modal-title {
+  color: white !important;
+  user-select: none;
+}
+
+.modal-footer {
+  justify-content: space-between !important;
 }

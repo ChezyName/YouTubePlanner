@@ -11,6 +11,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import FloatInputField from './components/Other/FloatInputField';
 import FloatInputArea from './components/Other/FloatInputArea';
 import Spinner from 'react-bootstrap/Spinner';
+import ModalWindow from './components/Other/ModalWindow';
 
 function App({clientID, APIKey}) {
   const [getID, setID] = useState(null)
@@ -33,6 +34,7 @@ function App({clientID, APIKey}) {
   const [currentFileChanging,setCurrentFileChanging] = useState({});
   const [fileChaningID,setfileChaningID] = useState("");
   const [allVideoPlans,setAllVideoPlans] = useState([]);
+  const [deleteEverything,setModalDE] = useState(false);
 
   const titleRef = useRef();
   const descRef = useRef();
@@ -215,6 +217,8 @@ function App({clientID, APIKey}) {
     }
     console.log("Loaded All Video Plans, Count: " + videoPlans.length);
     setAllVideoPlans(videoPlans);
+
+    document.documentElement.setProperty('--storage', videoPlans.length);
   }
 
   async function SaveVideo(){
@@ -257,6 +261,12 @@ function App({clientID, APIKey}) {
 
   return (
     <>
+        <ModalWindow setShow={deleteEverything} title='Delete All Files?' body='Are you sure you want to delete all files including all video plans made?'
+          onClosed={() => {setModalDE(false);}} onConfirmPressed={async () => {
+            await GoogleDrive.DeleteAll(authToken);
+            await GetAllVideoPlans();
+          }}/>
+
         <div id="OverlayTop" ref={parentRef} className='HIDE'>
           <div id="EditNavbar">
             <button id="BackButton" onClick={() => {setEditVideo(false);  setCurrentFileChanging({}); setfileChaningID(""); }}><img src={LeftArrow} style={{filter: 'invert(100%)'}}/></button>
@@ -339,13 +349,13 @@ function App({clientID, APIKey}) {
               </div>
 
               <div>
-                <div>Video Plans</div>
-                <div className='storage'><button id="Trash" style={{width: "100%", height: "100%", padding: "0", backgroundColor: 'transparent'}}><img src={Trash} style={{filter: 'invert(100%)'}}/></button></div>
+                  <button onClick={() => {setModalDE(true);}} id="Trash" style={{width: "100%", height: "100%", padding: "0", backgroundColor: 'transparent'}}>Delete Everything</button>
+                  <button onClick={() => {createNewVideo();}} id="nTrash" style={{width: "100%", height: "100%", padding: "0", backgroundColor: 'transparent'}}>Create New Video</button>
               </div>
             </div>
         </div>
 
-        { hasVideos ? <div id="All">
+        { allVideoPlans.length > 0 ? <div id="All">
           {allVideoPlans.map(VideoElement)}
         </div> : <div onClick={() => {createNewVideo()}} id="AddVideo"><span>Create your first <u>Video Plan</u>.</span></div>}
 
