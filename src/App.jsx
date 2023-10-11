@@ -274,8 +274,16 @@ function App({clientID, APIKey}) {
                 <button id="Uplaod" onClick={() => {fileInput.current.click();}}>Upload Thumbnail</button>
                 <button id="Download" onClick={async () => {
                   if(currentFileChanging && currentFileChanging.ThumbnailID != ""){
-                    let fileToDownload = await GoogleDrive.LoadBlob(authToken,currentFileChanging.ThumbnailID);
-                    console.log(fileToDownload);
+                    let blob = await GoogleDrive.LoadBlob(authToken,currentFileChanging.ThumbnailID);
+                    var a = document.createElement("a");
+                    document.body.appendChild(a);
+                    a.style = "display: none";
+                    let url = window.URL.createObjectURL(blob);
+                    a.href = url;
+                    a.download = "Thumbnail."+(blob.type.replace("image/",""));
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    a.remove();
                   }
                 }}>Download Thumbnail</button>
               </div>
