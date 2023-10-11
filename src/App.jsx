@@ -260,6 +260,7 @@ function App({clientID, APIKey}) {
         <div id="OverlayTop" ref={parentRef} className='HIDE'>
           <div id="EditNavbar">
             <button id="BackButton" onClick={() => {setEditVideo(false);  setCurrentFileChanging({}); setfileChaningID(""); }}><img src={LeftArrow} style={{filter: 'invert(100%)'}}/></button>
+            <button id="DeleteButton" onClick={() => {}}><img src={Trash} style={{filter: 'invert(100%)'}}/></button>
             <button id="videoID" disabled={true}>Video #{currentFileChanging.VideoNumber}</button>
             <button id="SaveButton" onClick={SaveVideo}>SAVE</button>
           </div>
