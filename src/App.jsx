@@ -385,8 +385,9 @@ function App({clientID, APIKey}) {
 
         {/** OVERLAY WIDGET / WINDOW TO EDIT VIDEO PLANNER INFORMATION */}
 
-        {!getLogedIn ? <div id="Overlay" style={{objectFit: "contain", backgroundColor: '#1F1F1F', justifyContent: 'center', alignItems: 'center'}}>
+        {!getLogedIn ? <div id="Overlay" style={{display: "flex !important", flexDirection: "column", objectFit: "contain", backgroundColor: '#1F1F1F', justifyContent: 'center', alignItems: 'center'}}>
           <Spinner style={{width: '6vw', height: '6vw'}} variant='light' animation='border' role="status"/>
+          <div style={{color: "white", fontWeight: "bold", marginTop: '2%'}}>Login to Google using the pop-up.</div>
         </div> : ""}
     </>
   )
