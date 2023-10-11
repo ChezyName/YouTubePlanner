@@ -275,6 +275,10 @@ function App({clientID, APIKey}) {
           onClosed={() => {setModalOne(false);}} onConfirmPressed={async () => {
             await GoogleDrive.Delete(authToken,fileChaningID);
 
+            if(currentFileChanging.ThumbnailID){
+              await GoogleDrive.Delete(authToken,currentFileChanging.ThumbnailID);
+            }
+
             console.log(mainFileData);
             let d = mainFileData;
             d.activeVideoPlans.splice(d.activeVideoPlans.indexOf(fileChaningID),1);
