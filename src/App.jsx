@@ -230,7 +230,7 @@ function App({clientID, APIKey}) {
       setCurrentFileChanging(data);
       setfileChaningID(id);
       setEditVideo(true);
-    }}><img src={data.Thumbnail} style={{width: "100%", height: "100%"}}/>{data.Title}</div>
+    }}><img src={data.Thumbnail} style={{width: "100%", height: "100%", aspectRatio: '16/9',objectFit: 'fill'}}/>{data.Title}</div>
   }
 
   document.addEventListener("keydown", function(e) {
@@ -269,7 +269,16 @@ function App({clientID, APIKey}) {
                 }
                 setCurrentFileChanging(newData);
               }}/>
-              <img id="Thumbnail" ref={thumbnailRef} onClick={() => {fileInput.current.click();}}></img>
+              <img id="Thumbnail" ref={thumbnailRef}></img>
+              <div id="UploadDownload">
+                <button id="Uplaod" onClick={() => {fileInput.current.click();}}>Upload Thumbnail</button>
+                <button id="Download" onClick={async () => {
+                  if(currentFileChanging && currentFileChanging.ThumbnailID != ""){
+                    let fileToDownload = await GoogleDrive.LoadBlob(authToken,currentFileChanging.ThumbnailID);
+                    console.log(fileToDownload);
+                  }
+                }}>Download Thumbnail</button>
+              </div>
               <div id="Title"><FloatInputField ref={titleRef} ID="TITLE" onChangeEvent={(t) => {let newData = currentFileChanging; newData.Title = t; setCurrentFileChanging(newData)}} type='text' placeholder='Title' maxCharCount={70}/></div>
               <div id="Notes"><FloatInputArea ref={notesRef} ID="NOTES" onChangeEvent={(t) => {let newData = currentFileChanging; newData.Notes = t; setCurrentFileChanging(newData)}} type='area' placeholder='Notes' maxCharCount={0}/></div>
             </div>

@@ -173,8 +173,8 @@ img {
 }
 
 #OverlayTop {
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   position: -webkit-sticky !important;
   position: sticky !important;
   z-index: 999 !important;
@@ -229,13 +229,9 @@ img {
   background-color: black;
   border: none !important;
   aspect-ratio: 16 / 9;
-  border: 1px solid rgba(255,255,255, 0.5) !important;
+  border: 1px solid rgba(255,255,255, 1) !important;
   border-radius: 2%;
   transition: border 0.2 ease-in-out;
-}
-
-#Thumbnail:hover, #Thumbnail:active, #Thumbnail:focus {
-  border: 1px solid rgba(255,255,255, 1) !important;
 }
 
 .form-control {
@@ -395,13 +391,13 @@ textarea, input {
   background-color: #282828;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   justify-content: center;
-  grid-template-columns: repeat(auto-fit, minmax(min-content, 400px));
+  grid-template-columns: repeat(auto-fit, minmax(min(100% / 3, max(480px, 100% / 5)), 1fr));
   grid-gap: 1%;
 }
 
 #All div{
-  width: auto;
-  height: auto;
+  width: 100%;
+  height: 100%;
   background-color: black;
   color: white;
   border: 1px solid rgba(255,255,255, 0.5) !important;
@@ -427,4 +423,24 @@ textarea, input {
 
 .SHOW {
   display: block;
+}
+
+#UploadDownload {
+  padding-top: 5px;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+#UploadDownload button {
+  background-color: #1F1F1F;
+  border: 1px solid rgba(255,255,255, 0.5) !important;
+}
+
+
+#UploadDownload button:hover , #UploadDownload button:active, #UploadDownload button:focus{
+  border: 1px solid rgba(255,255,255, 1) !important;
+  background-color: #121212;
 }
