@@ -14,4 +14,47 @@ Once this button is pressed, you be greated with a new page where you can edit t
 ![Create New Video Button](https://raw.githubusercontent.com/ChezyName/YouTubePlanner/main/Images/PlannedVideo.png)
  On this page, you can upload and download your thumbnails as well as editing the title, description, and user generated notes.
  
-## How This Page Works
+## How This Website Works
+On this website, all your data is held by Google / Google Drive. 
+
+```mermaid
+flowchart  TD
+
+A[On Page Loaded]  -->B[Login]
+
+B  -->  C[Create New Video]
+
+B  -->  Ca[Delete All Videos]
+
+B  -->  Cab[Open Video]
+
+Cab  -->  Cb[Video Editing Mode]
+
+C  -->  Cb
+
+Ca  -->  B
+
+Cb  -->  D1[Change Thumbnail]
+
+Cb  -->  D2[Download Thumbnail]
+
+Cb  -->  D3[Edit Title]
+
+Cb  -->  D4[Edit Description]
+
+Cb  -->  D5[Edit Notes]
+
+  
+
+D1  -->  E[Save or Discard]
+
+D2  -->  E[Save or Discard]
+
+D3  -->  E[Save or Discard]
+
+D4  -->  E[Save or Discard]
+
+D5  -->  E[Save or Discard]
+```
+
+Heres an example of how the page works.
