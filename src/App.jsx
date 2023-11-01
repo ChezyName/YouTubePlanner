@@ -145,7 +145,9 @@ function App({clientID, APIKey}) {
             for(let i = 0; i < d.activeVideoPlans.length; i++){
               console.log("Loading Up Video Plan #" + i + " - " + d.activeVideoPlans[i]);
               let loadedData = await GoogleDrive.Load(tokenResponse.access_token,d.activeVideoPlans[i]);
-              if(loadedData.ThumbnailID == null || loadedData.ThumbnailID == undefined || loadedData.ThumbnailID == ""){
+              if(loadedData.ThumbnailID){
+                console.log(loadedData);
+                console.log("Loading: " + loadedData.ThumbnailID)
                 let thumbnail = await GoogleDrive.LoadBlob(tokenResponse.access_token,loadedData.ThumbnailID);
                 const blobUrl = URL.createObjectURL(thumbnail)
                 loadedData.Thumbnail = blobUrl;
@@ -205,8 +207,8 @@ function App({clientID, APIKey}) {
     for(let i = 0; i < mainFileData.activeVideoPlans.length; i++){
       console.log("Loading Up Video Plan #" + i + " - " + mainFileData.activeVideoPlans[i]);
       let loadedData = await GoogleDrive.Load(authToken,mainFileData.activeVideoPlans[i]);
-      if(loadedData.ThumbnailID == null || loadedData.ThumbnailID == undefined || loadedData.ThumbnailID == ""){
-        console.log(loadedData.ThumbnailID == null || loadedData.ThumbnailID == undefined || loadedData.ThumbnailID == "");
+      if(loadedData.ThumbnailID){
+        console.log(loadedData.ThumbnailID);
         let thumbnail = await GoogleDrive.LoadBlob(authToken,loadedData.ThumbnailID);
         const blobUrl = URL.createObjectURL(thumbnail)
         loadedData.Thumbnail = blobUrl;
@@ -306,30 +308,20 @@ function App({clientID, APIKey}) {
                 let isPSD = fileToUpload.name.includes(".psd");
                 console.log(isPSD ? "YES" : "NO NO NO!");
                 if(isPSD){
-                  const result = await fileToUpload.arrayBuffer();
-                  const psdFile = Psd.parse(result);
-                  const compositeBuffer = await psdFile.composite();
-                  const imageData = new ImageData(
-                    compositeBuffer,
-                    psdFile.width,
-                    psdFile.height
-                  );
-                  const ImageBlob = await GoogleDrive.ImageDataToBlob(imageData);
+                  const buffer = await fileToUpload.arrayBuffer();
+                  const ImageBlob = await GoogleDrive.PSDtoPNGBlob(buffer);
                   console.log("Got Image As Blob");
 
                   const psdID = await GoogleDrive.UploadPSD(authToken,fileToUpload,fileToUpload.name);
 
                   let newData = currentFileChanging;
                   newData.OldThumbnailID = newData.ThumbnailID;
-                  newData.ThumbnailID = psdID;
+                  newData.ThumbnailID = psdID.id;
                   if(thumbnailRef.current) {
                     console.log(ImageBlob);
                     const blobUrl = URL.createObjectURL(ImageBlob)
                     thumbnailRef.current.src = blobUrl;
-                    
-                    let newFileChange = currentFileChanging;
-                    //newFileChange.Thumbnail = blobUrl;
-                    setCurrentFileChanging(newFileChange)
+                    newData.Thumbnail = blobUrl;
                   }
                   setCurrentFileChanging(newData);
                 }
@@ -346,9 +338,9 @@ function App({clientID, APIKey}) {
                     //const blobUrl = URL.createObjectURL(imageBlob)
                     thumbnailRef.current.src = imageBlob;
                     
-                    let newFileChange = currentFileChanging;
+                    //let newFileChange = currentFileChanging;
                     //newFileChange.Thumbnail = blobUrl;
-                    setCurrentFileChanging(newFileChange)
+                    //setCurrentFileChanging(newFileChange)
                   }
                   setCurrentFileChanging(newData);
                 }

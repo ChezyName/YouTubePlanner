@@ -1,3 +1,5 @@
+import Psd from "@webtoon/psd";
+
 function JSONtoBlob(json){
     const str = JSON.stringify(json);
     const bytes = new TextEncoder().encode(str);
@@ -5,6 +7,20 @@ function JSONtoBlob(json){
         type: "application/json;charset=utf-8"
     });
     return jsonToBlob;
+}
+
+export async function PSDtoPNGBlob(arrayBuffer){
+    return new Promise(async (resolve) => {
+        const psdFile = Psd.parse(arrayBuffer);
+        const compositeBuffer = await psdFile.composite();
+        const imageData = new ImageData(
+          compositeBuffer,
+          psdFile.width,
+          psdFile.height
+        );
+        let PNG = ImageDataToBlob(imageData);
+        resolve(PNG);
+    })
 }
 
 export function ImageDataToBlob(imageData){
@@ -39,7 +55,7 @@ export function UploadPSD(auth, psd, fileName){
         var fileMetadata = {
             "name": fileName,
             "parents": ["appDataFolder"],
-            "mimeType": ".psd"
+            "mimeType": "image/x-photoshop"
         };
 
         formData.append("metadata", JSONtoBlob(fileMetadata), {
@@ -222,11 +238,18 @@ export function getGoogleDriveBlobData(auth,id){
             headers: {
                 "Authorization": 'Bearer ' + auth,
             },
-        }).then((response) => response.blob())
-        .then(async (blob) => {
-            console.log(blob);
-            resolve(blob)
-        });
+        }).then(async (response) => {
+            console.log(response);
+            let blob = await response.blob()
+            if(blob.type == "image/x-photoshop"){
+                let buffer = await blob.arrayBuffer();
+                let PNGBlob = await PSDtoPNGBlob(buffer);
+                resolve(PNGBlob);
+            }
+            else{
+                resolve(blob)
+            }
+        })
     });
 }
 
@@ -249,7 +272,10 @@ export function getAllVideoPlans(auth){
                         let d = await getSingleGoogleDriveData(auth,files[i].id);
                         let thumbnail;
                         console.log(d.ThumbnailID, "Loading This Up.")
-                        //if(d.ThumbnailID) thumbnail = await getGoogleDriveBlobData(auth,d.ThumbnailID);
+                        if(d.ThumbnailID){
+                            console.log("Getting Thumbnail for " + d.ThumbnailID)
+                            thumbnail = await getGoogleDriveBlobData(auth,d.ThumbnailID);
+                        }
                         const blobUrl = URL.createObjectURL(thumbnail)
                         d.Thumbnail = blobUrl;
                         jsonFiles.push({
@@ -354,4 +380,5 @@ export default {
     DeleteAll: DeleteEverything,
     ImageDataToBlob: ImageDataToBlob,
     UploadPSD: UploadPSD,
+    PSDtoPNGBlob: PSDtoPNGBlob,
 } 
