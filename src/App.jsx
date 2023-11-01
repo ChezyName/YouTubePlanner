@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { useGoogleLogin, hasGrantedAllScopesGoogle, GoogleLogin } from '@react-oauth/google';
 import GoogleDrive, { UpdateMainFile } from './APIs/GoogleDrive';
+import Psd from '@webtoon/psd';
 
 import LeftArrow from "./assets/BackArrow.svg"
 import Trash from "./assets/Trash.svg"
@@ -144,7 +145,7 @@ function App({clientID, APIKey}) {
             for(let i = 0; i < d.activeVideoPlans.length; i++){
               console.log("Loading Up Video Plan #" + i + " - " + d.activeVideoPlans[i]);
               let loadedData = await GoogleDrive.Load(tokenResponse.access_token,d.activeVideoPlans[i]);
-              if(loadedData.ThumbnailID){
+              if(loadedData.ThumbnailID == null || loadedData.ThumbnailID == undefined || loadedData.ThumbnailID == ""){
                 let thumbnail = await GoogleDrive.LoadBlob(tokenResponse.access_token,loadedData.ThumbnailID);
                 const blobUrl = URL.createObjectURL(thumbnail)
                 loadedData.Thumbnail = blobUrl;
@@ -204,7 +205,8 @@ function App({clientID, APIKey}) {
     for(let i = 0; i < mainFileData.activeVideoPlans.length; i++){
       console.log("Loading Up Video Plan #" + i + " - " + mainFileData.activeVideoPlans[i]);
       let loadedData = await GoogleDrive.Load(authToken,mainFileData.activeVideoPlans[i]);
-      if(loadedData.ThumbnailID){
+      if(loadedData.ThumbnailID == null || loadedData.ThumbnailID == undefined || loadedData.ThumbnailID == ""){
+        console.log(loadedData.ThumbnailID == null || loadedData.ThumbnailID == undefined || loadedData.ThumbnailID == "");
         let thumbnail = await GoogleDrive.LoadBlob(authToken,loadedData.ThumbnailID);
         const blobUrl = URL.createObjectURL(thumbnail)
         loadedData.Thumbnail = blobUrl;
@@ -299,25 +301,57 @@ function App({clientID, APIKey}) {
           </div>
           <div id="Overlay2">
             <div id="ThumbnailTitle">
-              <input ref={fileInput} className="HIDE" type='file' name={"ImageFile"} accept="image/*" onChange={async (event) => {
+              <input ref={fileInput} className="HIDE" type='file' name={"ImageFile"} accept="image/*, .psd" onChange={async (event) => {
                 let fileToUpload = event.target.files[0];
-                let data = await GoogleDrive.UploadImage(authToken,fileToUpload,currentFileChanging.Title);
-                console.log(data);
-                let thumbnailID = data.id;
-                let newData = currentFileChanging;
-                newData.OldThumbnailID = newData.ThumbnailID;
-                newData.ThumbnailID = thumbnailID;
-                if(thumbnailRef.current) {
-                  let imageBlob = await GoogleDrive.ImageToBlob(fileToUpload);
-                  console.log(imageBlob);
-                  //const blobUrl = URL.createObjectURL(imageBlob)
-                  thumbnailRef.current.src = imageBlob;
-                  
-                  let newFileChange = currentFileChanging;
-                  //newFileChange.Thumbnail = blobUrl;
-                  setCurrentFileChanging(newFileChange)
+                let isPSD = fileToUpload.name.includes(".psd");
+                console.log(isPSD ? "YES" : "NO NO NO!");
+                if(isPSD){
+                  const result = await fileToUpload.arrayBuffer();
+                  const psdFile = Psd.parse(result);
+                  const compositeBuffer = await psdFile.composite();
+                  const imageData = new ImageData(
+                    compositeBuffer,
+                    psdFile.width,
+                    psdFile.height
+                  );
+                  const ImageBlob = await GoogleDrive.ImageDataToBlob(imageData);
+                  console.log("Got Image As Blob");
+
+                  const psdID = await GoogleDrive.UploadPSD(authToken,fileToUpload,fileToUpload.name);
+
+                  let newData = currentFileChanging;
+                  newData.OldThumbnailID = newData.ThumbnailID;
+                  newData.ThumbnailID = psdID;
+                  if(thumbnailRef.current) {
+                    console.log(ImageBlob);
+                    const blobUrl = URL.createObjectURL(ImageBlob)
+                    thumbnailRef.current.src = blobUrl;
+                    
+                    let newFileChange = currentFileChanging;
+                    //newFileChange.Thumbnail = blobUrl;
+                    setCurrentFileChanging(newFileChange)
+                  }
+                  setCurrentFileChanging(newData);
                 }
-                setCurrentFileChanging(newData);
+                else{
+                  let data = await GoogleDrive.UploadImage(authToken,fileToUpload,currentFileChanging.Title);
+                  //console.log(data);
+                  let thumbnailID = data.id;
+                  let newData = currentFileChanging;
+                  newData.OldThumbnailID = newData.ThumbnailID;
+                  newData.ThumbnailID = thumbnailID;
+                  if(thumbnailRef.current) {
+                    let imageBlob = await GoogleDrive.ImageToBlob(fileToUpload);
+                    console.log(imageBlob);
+                    //const blobUrl = URL.createObjectURL(imageBlob)
+                    thumbnailRef.current.src = imageBlob;
+                    
+                    let newFileChange = currentFileChanging;
+                    //newFileChange.Thumbnail = blobUrl;
+                    setCurrentFileChanging(newFileChange)
+                  }
+                  setCurrentFileChanging(newData);
+                }
               }}/>
               <img id="Thumbnail" ref={thumbnailRef}></img>
               <div id="UploadDownload">

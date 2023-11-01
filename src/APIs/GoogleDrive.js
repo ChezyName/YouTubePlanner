@@ -7,6 +7,20 @@ function JSONtoBlob(json){
     return jsonToBlob;
 }
 
+export function ImageDataToBlob(imageData){
+    let w = imageData.width;
+    let h = imageData.height;
+    let canvas = document.createElement("canvas");
+    canvas.width = w;
+    canvas.height = h;
+    let ctx = canvas.getContext("2d");
+    ctx.putImageData(imageData, 0, 0);        // synchronous
+  
+    return new Promise((resolve) => {
+          canvas.toBlob(resolve); // implied image/png format
+    });
+  }
+
 export function ImagetoBlob(img){
     return new Promise((resolve) => {
         var reader = new FileReader();
@@ -16,6 +30,33 @@ export function ImagetoBlob(img){
         reader.readAsDataURL(img);
     })
 }
+
+export function UploadPSD(auth, psd, fileName){
+    return new Promise((resolve) => {
+        //const ImageBlob = await ImagetoBlob(img);
+
+        var formData = new FormData();
+        var fileMetadata = {
+            "name": fileName,
+            "parents": ["appDataFolder"],
+            "mimeType": ".psd"
+        };
+
+        formData.append("metadata", JSONtoBlob(fileMetadata), {
+            contentType: "application/json; charset=UTF-8",
+        });
+
+        formData.append("data", psd);
+
+        fetch("https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart", {
+                method: "POST",
+                body: formData,
+                headers: { Authorization: "Bearer " + auth },
+            })
+            .then((res) => resolve(res.json()));
+    });
+}
+
 
 export function UploadImage(auth, img, fileName){
     return new Promise((resolve) => {
@@ -208,7 +249,7 @@ export function getAllVideoPlans(auth){
                         let d = await getSingleGoogleDriveData(auth,files[i].id);
                         let thumbnail;
                         console.log(d.ThumbnailID, "Loading This Up.")
-                        if(d.ThumbnailID) thumbnail = await getGoogleDriveBlobData(auth,d.ThumbnailID);
+                        //if(d.ThumbnailID) thumbnail = await getGoogleDriveBlobData(auth,d.ThumbnailID);
                         const blobUrl = URL.createObjectURL(thumbnail)
                         d.Thumbnail = blobUrl;
                         jsonFiles.push({
@@ -311,4 +352,6 @@ export default {
     Delete: deleteGoogleDriveFile,
     GetData: getGoogleDriveData,
     DeleteAll: DeleteEverything,
+    ImageDataToBlob: ImageDataToBlob,
+    UploadPSD: UploadPSD,
 } 

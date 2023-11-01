@@ -1,7 +1,7 @@
 
 # [YouTube Video Planner](https://chezyname.github.io/YouTubePlanner/)
 
-  
+➤ [Changelog](#changelog)
 
 ## How To Plan Your Videos
 
@@ -163,3 +163,5 @@ APIKey="API KEY"/>
 
 )
 ```
+
+# Changelog
