@@ -231,6 +231,36 @@ export function deleteGoogleDriveFile(auth,id){
     });
 }
 
+export function getGoogleDriveMetadata(auth,id){
+    return new Promise((resolve) => {
+        fetch(`https://www.googleapis.com/drive/v3/files/${id}`, {
+            method: "GET",
+            headers: {
+                "Authorization": 'Bearer ' + auth,
+            },
+        }).then(async (response) => {
+            console.log(response);
+            let json = await response.json()
+            resolve(json)
+        })
+    });
+}
+
+export function getGoogleDriveFileBLOB(auth,id){
+    return new Promise((resolve) => {
+        fetch(`https://www.googleapis.com/drive/v3/files/${id}?alt=media`, {
+            method: "GET",
+            headers: {
+                "Authorization": 'Bearer ' + auth,
+            },
+        }).then(async (response) => {
+            console.log(response);
+            let blob = await response.blob()
+            resolve(blob)
+        })
+    });
+}
+
 export function getGoogleDriveBlobData(auth,id){
     return new Promise((resolve) => {
         fetch(`https://www.googleapis.com/drive/v3/files/${id}?alt=media`, {
@@ -381,4 +411,6 @@ export default {
     ImageDataToBlob: ImageDataToBlob,
     UploadPSD: UploadPSD,
     PSDtoPNGBlob: PSDtoPNGBlob,
+    LoadMetadata: getGoogleDriveMetadata,
+    getGoogleDriveFileBLOB: getGoogleDriveFileBLOB,
 } 
