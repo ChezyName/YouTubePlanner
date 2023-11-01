@@ -165,3 +165,4 @@ APIKey="API KEY"/>
 ```
 
 # Changelog
+[11/1/23] - Added The Full Support Of .PSD `Photoshop Files` As Thumbnails In The Grid Layout, Including Downloading and Uploading .PSD Files!
