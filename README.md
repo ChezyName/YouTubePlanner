@@ -166,3 +166,7 @@ APIKey="API KEY"/>
 
 # Changelog
 [11/1/23] - Added The Full Support Of .PSD `Photoshop Files` As Thumbnails In The Grid Layout, Including Downloading and Uploading .PSD Files!
+
+# Upcomming Changes
+Future planning where you are able to set the date the video you plan would come out
+You can also see each video plans based on year
